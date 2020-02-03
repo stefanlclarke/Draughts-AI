@@ -29,12 +29,14 @@ class board(object):
         self.board_size = board_size
         self.blankboard = np.zeros([self.board_size, self.board_size])
         self.board = startingpos(np.zeros([self.board_size, self.board_size]))
-        self.moving = 1
+        self.player = -1
         
-    def makemove(self, piece, number, player):
-        board, nextmove = move(self.board, piece, number, player)
+    def makemove(self, piece, number):
+        board, nextmove = move(self.board, piece, number, self.player)
+        print("MOVING NEXT:", nextmove)
+        board = checkforking(board)
         self.board = board
-        self.moving = nextmove
+        self.player = nextmove
         
         
 game = board(board_size)
@@ -48,54 +50,58 @@ def isinboard(board, space):
     
         
 def ismovelegal(board, tile, direction, player):
-    if abs(board[tile[0], tile[1]]) == 2:
+    b = sum(sum(np.isin(board,3))) + sum(sum(np.isin(board,-3))) + sum(sum(np.isin(board,4))) + sum(sum(np.isin(board,-4)))
+    if b != 0:
+        if abs(board[tile[0], tile[1]]) == 1:
+            return False
+    if abs(board[tile[0], tile[1]]) == 2 or abs(board[tile[0], tile[1]])==4:
         king = True
     else:
         king = False
     movespace = tile + direction
     takespace = tile + 2*direction
     if isinboard(board, tile) == False:
-        print("Tile not in board")
+        #print("Tile not in board")
         return False
     if isinboard(board, movespace) == False:
-        print("Move not in board")
+        #print("Move not in board")
         return False
     if player == -1:
         if king == False and direction[0] == 1:
-            print("Backwards move attempted")
+            #print("Backwards move attempted")
             return False
         
-        if board[tile[0], tile[1]] != -1 and board[tile[0], tile[1]] != -2:
-            print("Piece not selected")
+        if board[tile[0], tile[1]] != -1 and board[tile[0], tile[1]] != -2 and board[tile[0], tile[1]] != -3 and board[tile[0], tile[1]] != -4:
+            #print("Piece not selected")
             return False
         else:
             if board[movespace[0], movespace[1]] == 0:
                 return True
             elif board[movespace[0], movespace[1]] == 1 or board[movespace[0], movespace[1]] == 2:
                 if isinboard(board, takespace) == False:
-                    print("Illegal movement attempted")
+                    #print("Illegal movement attempted")
                     return False
                 elif board[takespace[0], takespace[1]] == 0:
                     return True
                 else:
-                    print("Illegal movement attempted")
+                    #print("Illegal movement attempted")
                     return False
             
             pass
     elif player == 1:
         if king == False and direction[0] == -1:
-            print("Backwards move attempted")
+            #print("Backwards move attempted")
             return False
         
-        if board[tile[0], tile[1]] != 1 and board[tile[0], tile[1]] != 2:
-            print("Piece not selected")
+        if board[tile[0], tile[1]] != 1 and board[tile[0], tile[1]] != 2 and board[tile[0], tile[1]] != 3 and board[tile[0], tile[1]] != 4:
+            #print("Piece not selected")
             return False
         else:
             if board[movespace[0], movespace[1]] == 0:
                 return True
             elif board[movespace[0], movespace[1]] == -1 or board[movespace[0], movespace[1]] == -2:
                 if isinboard(board, takespace) == False:
-                    print("Illegal movement attempted")
+                    print("Hop not in board")
                     return False
                 elif board[takespace[0], takespace[1]] == 0:
                     return True
@@ -104,35 +110,83 @@ def ismovelegal(board, tile, direction, player):
                     return False
                 
 def move(board1, piece, number, player):
-    board = board1.copy()
+    board = board1
     counter = board[piece[0], piece[1]]
-    if number == 1:
+    #print(counter)
+
+    if number == 0:
         move = np.array([-1, -1])
-    elif number == 2:
+    elif number == 1:
         move = np.array([-1, 1])
-    elif number == 3:
+    elif number == 2:
         move = np.array([1,1])
-    elif number == 4:
+    elif number == 3:
         move = np.array([1, -1])
     else:
-        print("ILLEGAL MOVE")
+        #print("ILLEGAL MOVE")
         return (board, player)
     legal = ismovelegal(board, piece, move, player)
     if legal == False:
-        print("ILLEGAL MOVE")
+        #print("ILLEGAL MOVE")
         return (board, player)
-    else:
-        moveloc = piece + move
-        takeloc = piece + 2*move
-        if board[moveloc[0], moveloc[1]] != 0:
-            board[piece[0], piece[1]] = 0
-            board[moveloc[0], moveloc[1]] = 0
-            board[takeloc[0], takeloc[1]] = counter
-            return (board, player)
-        else:
-            board[piece[0], piece[1]] = 0
-            board[moveloc[0], moveloc[1]] = counter
-            return(board, -player)
-            
+    
+    if abs(counter)==1.0 or abs(counter)==3.0:
+        takecounter = 3*player
+    elif abs(counter)==2.0 or abs(counter)==4.0:
+        takecounter = 4*player
 
-        
+    moveloc = piece + move
+    takeloc = piece + 2*move
+    if board[moveloc[0], moveloc[1]] != 0:
+        board[piece[0], piece[1]] = 0
+        board[moveloc[0], moveloc[1]] = 0
+        board[takeloc[0], takeloc[1]] = takecounter
+        more_hops = check_further_moves(board, takeloc, player)
+        print("MORE HOPS:", more_hops)
+        if len(more_hops)==0:
+            #print("no more hops")
+            board[takeloc[0], takeloc[1]] = counter
+            return (board, -player)
+        else:
+            return (board, player)
+    else:
+        board[piece[0], piece[1]] = 0
+        board[moveloc[0], moveloc[1]] = counter
+    
+        return(board, -player)
+    
+def checkforking(board):
+    kings1 = [i for i,x in enumerate(board[-1]) if x == 1]
+    kings_1 = [i for i,x in enumerate(board[0]) if x == -1]
+    for i,x in enumerate(kings1):
+        board[-1][x] = 2
+    for i,x in enumerate(kings_1):
+        board[0][x]=-2
+    return board
+
+moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
+
+def check_further_moves(board, piece, player):
+    #print(piece)
+    #print(abs(board[piece[0], piece[1]]))
+    if abs(board[piece[0], piece[1]])==1 or abs(board[piece[0], piece[1]])==3:
+        if player == -1:
+            a=0
+            b=2
+        else:
+            a=2
+            b=4
+    else:
+        a=0
+        b=4
+    movespaces = [(moves[i], piece+moves[i]) for i in range(a,b)]
+    print("MOVESPACES:", movespaces)
+    for x in movespaces:
+        print(x[0], x[1], ismovelegal(board, piece, x[1], player))
+    available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[1], player) and board[x[1][0], x[1][1]]==-player]
+    print(available_hops)
+    return available_hops
+
+def play(loc1, loc2, move):
+    game.makemove(np.array([loc1, loc2]), move)
+    print(game.board)
