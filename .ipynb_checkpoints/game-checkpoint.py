@@ -37,6 +37,12 @@ class board(object):
         board = checkforking(board)
         self.board = board
         self.player = nextmove
+        victor = checkwin(self.board)
+        stalemate = checkstalemate(self.board, -self.player)
+        return victor, stalemate
+    
+    def reset(self):
+        self.board = startingpos(np.zeros([self.board_size, self.board_size]))
         
         
 game = board(board_size)
@@ -94,24 +100,32 @@ def ismovelegal(board, tile, direction, player):
             return False
         
         if board[tile[0], tile[1]] != 1 and board[tile[0], tile[1]] != 2 and board[tile[0], tile[1]] != 3 and board[tile[0], tile[1]] != 4:
-            #print("Piece not selected")
+           # print("Piece not selected")
             return False
         else:
             if board[movespace[0], movespace[1]] == 0:
                 return True
             elif board[movespace[0], movespace[1]] == -1 or board[movespace[0], movespace[1]] == -2:
                 if isinboard(board, takespace) == False:
-                    print("Hop not in board")
+                    #print("Hop not in board")
                     return False
                 elif board[takespace[0], takespace[1]] == 0:
                     return True
                 else:
-                    print("Illegal movement attempted")
+                    #print("Illegal movement attempted")
                     return False
                 
 def move(board1, piece, number, player):
     board = board1
     counter = board[piece[0], piece[1]]
+    if counter == 3:
+        counter = 1
+    elif counter == 4:
+        counter = 2
+    elif counter == -3:
+        counter = -1
+    elif counter == -4:
+        counter = -2
     #print(counter)
 
     if number == 0:
@@ -182,11 +196,48 @@ def check_further_moves(board, piece, player):
     movespaces = [(moves[i], piece+moves[i]) for i in range(a,b)]
     print("MOVESPACES:", movespaces)
     for x in movespaces:
-        print(x[0], x[1], ismovelegal(board, piece, x[1], player))
-    available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[1], player) and board[x[1][0], x[1][1]]==-player]
-    print(available_hops)
+        print(x[0], x[1], ismovelegal(board, piece, x[0], player))
+    available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[0], player) and board[x[1][0], x[1][1]]==-player]
+    print("AVAILABLE HOPS:", available_hops)
     return available_hops
 
 def play(loc1, loc2, move):
-    game.makemove(np.array([loc1, loc2]), move)
+    victor, stalemate = game.makemove(np.array([loc1, loc2]), move)
+    print(victor)
+    print(stalemate)
     print(game.board)
+    if victor != 0:
+        print("GAME OVER!")
+        game.reset()
+    if stalemate:
+        print("STALEMATE")
+        game.reset()
+    return victor
+    
+def checkwin(board):
+    piecesp = board.copy()
+    piecesm = board.copy()
+    piecesp[piecesp<0]=0
+    piecesm[piecesm<0]=0
+    mwin = sum(sum(piecesp))
+    pwin = sum(sum(piecesm))
+    if mwin == 0:
+        return -1
+    elif pwin == 0:
+        return 1
+    else:
+        return 0
+    
+def checkstalemate(board, player):
+    pieces = np.argwhere(player*board > 0)
+    print(pieces)
+    maybe = False
+    while maybe == False:
+        for piece in pieces:
+            for move in moves:
+                print(piece, move, player, ismovelegal(board, piece, move, player))
+                if ismovelegal(board, piece, move , player):
+                    maybe = True
+        if maybe == False:
+            return True
+    return False
