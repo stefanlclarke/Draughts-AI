@@ -203,8 +203,9 @@ def check_further_moves(board, piece, player):
 
 def play(loc1, loc2, move):
     victor, stalemate = game.makemove(np.array([loc1, loc2]), move)
-    print(victor)
-    print(stalemate)
+    print(f"Victor: {victor}")
+    print(f"Stalemate? {stalemate}")
+    print("Game Board:")
     print(game.board)
     if victor != 0:
         print("GAME OVER!")
