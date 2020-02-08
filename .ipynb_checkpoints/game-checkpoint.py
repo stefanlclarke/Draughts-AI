@@ -30,7 +30,7 @@ class board(object):
         self.blankboard = np.zeros([self.board_size, self.board_size])
         self.board = startingpos(np.zeros([self.board_size, self.board_size]))
         self.player = -1
-        
+
     def makemove(self, piece, number):
         board, nextmove = move(self.board, piece, number, self.player)
         print("MOVING NEXT:", nextmove)
@@ -40,11 +40,11 @@ class board(object):
         victor = checkwin(self.board)
         stalemate = checkstalemate(self.board, -self.player)
         return victor, stalemate
-    
+
     def reset(self):
         self.board = startingpos(np.zeros([self.board_size, self.board_size]))
-        
-        
+
+
 game = board(board_size)
 
 def isinboard(board, space):
@@ -53,8 +53,8 @@ def isinboard(board, space):
         return False
     else:
         return True
-    
-        
+
+
 def ismovelegal(board, tile, direction, player):
     b = sum(sum(np.isin(board,3))) + sum(sum(np.isin(board,-3))) + sum(sum(np.isin(board,4))) + sum(sum(np.isin(board,-4)))
     if b != 0:
@@ -76,7 +76,7 @@ def ismovelegal(board, tile, direction, player):
         if king == False and direction[0] == 1:
             #print("Backwards move attempted")
             return False
-        
+
         if board[tile[0], tile[1]] != -1 and board[tile[0], tile[1]] != -2 and board[tile[0], tile[1]] != -3 and board[tile[0], tile[1]] != -4:
             #print("Piece not selected")
             return False
@@ -92,13 +92,13 @@ def ismovelegal(board, tile, direction, player):
                 else:
                     #print("Illegal movement attempted")
                     return False
-            
+
             pass
     elif player == 1:
         if king == False and direction[0] == -1:
             #print("Backwards move attempted")
             return False
-        
+
         if board[tile[0], tile[1]] != 1 and board[tile[0], tile[1]] != 2 and board[tile[0], tile[1]] != 3 and board[tile[0], tile[1]] != 4:
            # print("Piece not selected")
             return False
@@ -114,7 +114,7 @@ def ismovelegal(board, tile, direction, player):
                 else:
                     #print("Illegal movement attempted")
                     return False
-                
+
 def move(board1, piece, number, player):
     board = board1
     counter = board[piece[0], piece[1]]
@@ -143,7 +143,7 @@ def move(board1, piece, number, player):
     if legal == False:
         #print("ILLEGAL MOVE")
         return (board, player)
-    
+
     if abs(counter)==1.0 or abs(counter)==3.0:
         takecounter = 3*player
     elif abs(counter)==2.0 or abs(counter)==4.0:
@@ -166,9 +166,9 @@ def move(board1, piece, number, player):
     else:
         board[piece[0], piece[1]] = 0
         board[moveloc[0], moveloc[1]] = counter
-    
+
         return(board, -player)
-    
+
 def checkforking(board):
     kings1 = [i for i,x in enumerate(board[-1]) if x == 1]
     kings_1 = [i for i,x in enumerate(board[0]) if x == -1]
@@ -203,8 +203,9 @@ def check_further_moves(board, piece, player):
 
 def play(loc1, loc2, move):
     victor, stalemate = game.makemove(np.array([loc1, loc2]), move)
-    print(victor)
-    print(stalemate)
+    print(f"Victor: {victor}")
+    print(f"Stalemate? {stalemate}")
+    print("Game Board:")
     print(game.board)
     if victor != 0:
         print("GAME OVER!")
@@ -213,7 +214,7 @@ def play(loc1, loc2, move):
         print("STALEMATE")
         game.reset()
     return victor
-    
+
 def checkwin(board):
     piecesp = board.copy()
     piecesm = board.copy()
@@ -227,17 +228,13 @@ def checkwin(board):
         return 1
     else:
         return 0
-    
+
 def checkstalemate(board, player):
     pieces = np.argwhere(player*board > 0)
     print(pieces)
-    maybe = False
-    while maybe == False:
-        for piece in pieces:
-            for move in moves:
-                print(piece, move, player, ismovelegal(board, piece, move, player))
-                if ismovelegal(board, piece, move , player):
-                    maybe = True
-        if maybe == False:
-            return True
-    return False
+    for piece in pieces:
+        for move in moves:
+            print(piece, move, player, ismovelegal(board, piece, move, player))
+            if ismovelegal(board, piece, move , player):
+                return False
+    return True

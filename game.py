@@ -236,5 +236,5 @@ def checkstalemate(board, player):
         for move in moves:
             print(piece, move, player, ismovelegal(board, piece, move, player))
             if ismovelegal(board, piece, move , player):
-                return True 
-    return False
+                return False
+    return True
