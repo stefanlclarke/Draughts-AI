@@ -1,5 +1,5 @@
-import gamef
-from gamef import board
+import game
+from game import board
 
 board_size=6
 game = board(board_size)
