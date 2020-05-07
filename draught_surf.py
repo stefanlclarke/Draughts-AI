@@ -19,7 +19,7 @@ class DraughtVisualiser:
         gfxdraw.box(self.my_surf, to_draw, colour)
 
     def draw_piece(self, x, y, colour):
-        gfxdraw.filled_circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour ) 
+        gfxdraw.filled_circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0,0,0))
@@ -39,7 +39,7 @@ class DraughtVisualiser:
 
                 if val in [-4,-3,3,4]:
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
-                
+
 
 
 
