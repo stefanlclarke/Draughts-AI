@@ -38,13 +38,6 @@ class DraughtVisualiser:
 
                 if val in [-4,-3]:
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
-<<<<<<< HEAD
-=======
-                elif val in [3,4]:
-                    gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("green") )
-                
-
->>>>>>> 6df70578b7d273b383b54b12f4b4586c5854765d
 
 
     def draw_board(self):
@@ -80,7 +73,7 @@ def test():
                     movepair[0] = square
                 if clicknum == 1%2:
                     movepair[1] = square
-                    
+
 
 
 

@@ -118,18 +118,18 @@ def ismovelegal(board, tile, direction, player):
 
 def get_legal_moves(board,player):
     n = len(board)
-    moves = []
+    moves_considered = []
     for i in range(n):
         for j in range(n):
             for d in [0,1,2,3]:
-                if ismovelegal(board, (i,j) ,  d, player):
-                    moves.append( ( (i,j),d) )
-    return moves
+                if ismovelegal(board, np.array([i,j]) ,  moves[d], player):
+                    moves_considered.append( ( (i,j),d) )
+    return moves_considered
 
 def get_random_move(board,player):
-    moves = get_legal_moves(board,  player)
-    n = len(moves)
-    return moves[random.randint(0,n-1) ]
+    moves_considered = get_legal_moves(board,  player)
+    n = len(moves_considered)
+    return moves_considered[random.randint(0,n) ]
 
 def move(board1, piece, number, player):
     board = board1
