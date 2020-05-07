@@ -41,8 +41,6 @@ class DraughtVisualiser:
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
 
 
-
-
     def draw_board(self):
         for x in range(self.b_size):
             for y in range(self.b_size):
@@ -61,15 +59,24 @@ def test():
     pygame.display.set_caption("Test!")
     pygame.display.update()
     while True: # main game loop
+        clicknum = 0
+        movepair = [np.array([0,0]), np.array([0,0])]
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 square = find_square( (0,0), pos, 800/40)
-                board[square[0]][square[1]] += 1
-                if board[square[0]][square[1]] >  4:
-                    board[square[0]][square[1]] = -4
+                #board[square[0]][square[1]] += 1
+                #if board[square[0]][square[1]] >  4:
+                #    board[square[0]][square[1]] = -4
+                if clicknum == 0%2:
+                    movepair[0] = square
+                if clicknum == 1%2:
+                    movepair[1] = square
+                    
+
+
 
         vis.draw_from_grid(board)
         d_surf.blit(vis.my_surf, (0,0))
