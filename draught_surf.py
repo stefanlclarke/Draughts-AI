@@ -13,6 +13,22 @@ class DraughtVisualiser:
 
     def draw_piece(self, x, y, colour):
         pygame.draw.circle(self.my_surf, colour, ( int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size )) , int(self.tile_size * 0.4)  )
+
+    def draw_from_grid(self, grid):
+        self.my_surf.fill(pygame.Color(0,0,0))
+        for x in range(self.b_size):
+            for y in range(self.b_size):
+                val = grid[x][y]
+                if val == 1:
+                    self.draw_piece(x,y, pygame.Color("chocolate1"))
+                elif val == 2:
+                    self.draw_piece(x,y, pygame.Color("chocolate2"))
+                elif val == -1:
+                    self.draw_piece(x,y, pygame.Color("tan1"))
+                elif val == -2:
+                    self.draw_piece(x,y, pygame.Color("tan2"))
+                
+
     
     def draw_board(self):
         for x in range(self.b_size):
