@@ -19,7 +19,12 @@ class DraughtVisualiser:
         gfxdraw.box(self.my_surf, to_draw, colour)
 
     def draw_piece(self, x, y, colour):
+<<<<<<< HEAD
         gfxdraw.filled_circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour ) 
+=======
+        gfxdraw.circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
+        print("drawing")
+>>>>>>> 2557bcc672864cb59b3179ace707216d2d23f7f5
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0,0,0))
@@ -29,6 +34,7 @@ class DraughtVisualiser:
                 val = grid[x][y]
                 if val == 1 or  val == 3:
                     self.draw_piece(x,y, pygame.Color("chocolate1"))
+                    #print("1")
                 elif val == 2  or val == 4:
                     self.draw_piece(x,y, pygame.Color("chocolate4"))
                 elif val == -1 or val == -3:
@@ -37,10 +43,15 @@ class DraughtVisualiser:
                     self.draw_piece(x,y, pygame.Color("darkgoldenrod4"))
 
                 if val in [-4,-3,3,4]:
+<<<<<<< HEAD
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
                 
+=======
+                    pygame.draw.circle(self.my_surf, pygame.Color("red"), ( int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size )) , int(self.tile_size * 0.1)  )
+>>>>>>> 2557bcc672864cb59b3179ace707216d2d23f7f5
 
-    
+
+
     def draw_board(self):
         for x in range(self.b_size):
             for y in range(self.b_size):
@@ -55,7 +66,7 @@ def test():
     board = [[0 for i in range(40)] for j in range(40)]
     vis = DraughtVisualiser(800,40)
     vis.draw_board()
-    
+
     pygame.display.set_caption("Test!")
     pygame.display.update()
     while True: # main game loop
