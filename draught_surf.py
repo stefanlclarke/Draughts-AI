@@ -19,12 +19,7 @@ class DraughtVisualiser:
         gfxdraw.box(self.my_surf, to_draw, colour)
 
     def draw_piece(self, x, y, colour):
-<<<<<<< HEAD
         gfxdraw.filled_circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour ) 
-=======
-        gfxdraw.circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
-        print("drawing")
->>>>>>> 2557bcc672864cb59b3179ace707216d2d23f7f5
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0,0,0))
@@ -43,12 +38,8 @@ class DraughtVisualiser:
                     self.draw_piece(x,y, pygame.Color("darkgoldenrod4"))
 
                 if val in [-4,-3,3,4]:
-<<<<<<< HEAD
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
                 
-=======
-                    pygame.draw.circle(self.my_surf, pygame.Color("red"), ( int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size )) , int(self.tile_size * 0.1)  )
->>>>>>> 2557bcc672864cb59b3179ace707216d2d23f7f5
 
 
 
