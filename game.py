@@ -38,11 +38,12 @@ class board(object):
         self.board = board
         self.player = nextmove
         victor = checkwin(self.board)
-        stalemate = checkstalemate(self.board, -self.player)
+        stalemate = checkstalemate(self.board, self.player)
         return victor, stalemate
 
     def reset(self):
         self.board = startingpos(np.zeros([self.board_size, self.board_size]))
+        self.player=-1
 
 
 #game = board(board_size)
@@ -219,17 +220,22 @@ def checkwin(board):
     piecesp = board.copy()
     piecesm = board.copy()
     piecesp[piecesp<0]=0
-    piecesm[piecesm<0]=0
+    piecesm[piecesm>0]=0
+    print(piecesp)
+    print(piecesm)
     mwin = sum(sum(piecesp))
     pwin = sum(sum(piecesm))
     if mwin == 0:
+        print("VICTORY!")
         return -1
     elif pwin == 0:
+        print("VICTORY!")
         return 1
     else:
         return 0
 
 def checkstalemate(board, player):
+    print("Player:", player)
     pieces = np.argwhere(player*board > 0)
     print(pieces)
     for piece in pieces:
