@@ -30,11 +30,11 @@ class DraughtVisualiser:
                 if val == 1 or  val == 3:
                     self.draw_piece(x,y, pygame.Color("chocolate1"))
                 elif val == 2  or val == 4:
-                    self.draw_piece(x,y, pygame.Color("chocolate2"))
+                    self.draw_piece(x,y, pygame.Color("chocolate4"))
                 elif val == -1 or val == -3:
-                    self.draw_piece(x,y, pygame.Color("firebrick1"))
+                    self.draw_piece(x,y, pygame.Color("darkgoldenrod1"))
                 elif val == -2  or val == -4:
-                    self.draw_piece(x,y, pygame.Color("firebrick2"))
+                    self.draw_piece(x,y, pygame.Color("darkgoldenrod4"))
 
                 if val in [-4,-3,3,4]:
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
