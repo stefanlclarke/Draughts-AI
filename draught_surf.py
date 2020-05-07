@@ -1,8 +1,14 @@
 import pygame
 from pygame import gfxdraw
 
-class DraughtVisualiser:
+def find_square( corner , click , square_size):
+    # Finds the square clicked on from the pixel and corner
+    square_x = int((click[0] -  corner[0]) // square_size)
+    square_y = int((click[1] -  corner[1]) // square_size)
+    return (square_x, square_y)
 
+
+class DraughtVisualiser:
     def __init__(self, screen_size, board_size):
         self.my_surf = pygame.Surface((screen_size,screen_size))
         self.b_size = board_size
@@ -18,6 +24,7 @@ class DraughtVisualiser:
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0,0,0))
+        self.draw_board()
         for x in range(self.b_size):
             for y in range(self.b_size):
                 val = grid[x][y]
@@ -47,14 +54,23 @@ class DraughtVisualiser:
 def test():
     pygame.init()
     d_surf = pygame.display.set_mode((800,800))
+    board = [[0 for i in range(40)] for j in range(40)]
     vis = DraughtVisualiser(800,40)
     vis.draw_board()
-    vis.draw_piece(3,3, pygame.Color("saddlebrown"))
-    d_surf.blit(vis.my_surf, (0,0))
+
     pygame.display.set_caption("Test!")
     pygame.display.update()
     while True: # main game loop
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+            if event.type == pygame.MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                square = find_square( (0,0), pos, 800/40)
+                board[square[0]][square[1]] += 1
+                if board[square[0]][square[1]] >  4:
+                    board[square[0]][square[1]] = -4
+
+        vis.draw_from_grid(board)
+        d_surf.blit(vis.my_surf, (0,0))
         pygame.display.update()
