@@ -1,5 +1,5 @@
 import numpy as np
-
+import random
 #Parameters
 #board_size = 6
 
@@ -115,6 +115,21 @@ def ismovelegal(board, tile, direction, player):
                 else:
                     #print("Illegal movement attempted")
                     return False
+
+def get_legal_moves(board,player):
+    n = len(board)
+    moves = []
+    for i in range(n):
+        for j in range(n):
+            for d in [0,1,2,3]:
+                if ismovelegal(board, (i,j) ,  d, player):
+                    moves.append( ( (i,j),d) )
+    return moves
+
+def get_random_move(board,player):
+    moves = get_legal_moves(board,  player)
+    n = len(moves)
+    return moves[random.randint(0,n-1) ]
 
 def move(board1, piece, number, player):
     board = board1

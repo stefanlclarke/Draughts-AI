@@ -28,17 +28,23 @@ class DraughtVisualiser:
             for y in range(self.b_size):
                 val = grid[x][y]
                 if val == 1 or  val == 3:
-                    self.draw_piece(x,y, pygame.Color("chocolate1"))
-                    #print("1")
+                    self.draw_piece(x,y, pygame.Color("deeppink1"))
                 elif val == 2  or val == 4:
-                    self.draw_piece(x,y, pygame.Color("chocolate4"))
+                    self.draw_piece(x,y, pygame.Color("deeppink4"))
                 elif val == -1 or val == -3:
                     self.draw_piece(x,y, pygame.Color("darkgoldenrod1"))
                 elif val == -2  or val == -4:
                     self.draw_piece(x,y, pygame.Color("darkgoldenrod4"))
 
-                if val in [-4,-3,3,4]:
+                if val in [-4,-3]:
                     gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
+<<<<<<< HEAD
+=======
+                elif val in [3,4]:
+                    gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("green") )
+                
+
+>>>>>>> 6df70578b7d273b383b54b12f4b4586c5854765d
 
 
     def draw_board(self):
