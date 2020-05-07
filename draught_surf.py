@@ -1,4 +1,5 @@
 import pygame
+from pygame import gfxdraw
 
 class DraughtVisualiser:
 
@@ -9,24 +10,27 @@ class DraughtVisualiser:
 
     def draw_square(self, x, y, colour):
         to_draw = pygame.Rect( x*self.tile_size, y*self.tile_size, self.tile_size , self.tile_size)
-        pygame.draw.rect(self.my_surf, colour , to_draw)
+        gfxdraw.box(self.my_surf, to_draw, colour)
 
     def draw_piece(self, x, y, colour):
-        pygame.draw.circle(self.my_surf, colour, ( int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size )) , int(self.tile_size * 0.4)  )
+        gfxdraw.circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour ) 
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0,0,0))
         for x in range(self.b_size):
             for y in range(self.b_size):
                 val = grid[x][y]
-                if val == 1:
+                if val == 1 or  val == 3:
                     self.draw_piece(x,y, pygame.Color("chocolate1"))
-                elif val == 2:
+                elif val == 2  or val == 4:
                     self.draw_piece(x,y, pygame.Color("chocolate2"))
-                elif val == -1:
+                elif val == -1 or val == -3:
                     self.draw_piece(x,y, pygame.Color("tan1"))
-                elif val == -2:
+                elif val == -2  or val == -4:
                     self.draw_piece(x,y, pygame.Color("tan2"))
+
+                if val in [-4,-3,3,4]:
+                    pygame.draw.circle(self.my_surf, pygame.Color("red"), ( int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size )) , int(self.tile_size * 0.1)  )
                 
 
     
