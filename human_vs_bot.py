@@ -47,3 +47,4 @@ def makeboard():
         colour=pygame.Color("chocolate1")
         d_surf.blit(vis.my_surf, (0,0))
         pygame.display.update()
+makeboard()

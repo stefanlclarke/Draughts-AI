@@ -128,7 +128,7 @@ def get_legal_moves(board,player):
 def get_random_move(board,player):
     moves_considered = get_legal_moves(board,  player)
     n = len(moves_considered)
-    return moves_considered[random.randint(0,n) ]
+    return moves_considered[random.randint(0,n-1) ]
 
 def move(board1, piece, number, player):
     board = board1
