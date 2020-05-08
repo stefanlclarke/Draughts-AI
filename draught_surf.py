@@ -7,7 +7,6 @@ def find_square( corner , click , square_size):
     square_y = int((click[1] -  corner[1]) // square_size)
     return (square_x, square_y)
 
-
 class DraughtVisualiser:
     def __init__(self, screen_size, board_size):
         self.my_surf = pygame.Surface((screen_size,screen_size))
@@ -66,16 +65,13 @@ def test():
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 square = find_square( (0,0), pos, 800/40)
-                #board[square[0]][square[1]] += 1
-                #if board[square[0]][square[1]] >  4:
-                #    board[square[0]][square[1]] = -4
+                board[square[0]][square[1]] += 1
+                if board[square[0]][square[1]] >  4:
+                    board[square[0]][square[1]] = -4
                 if clicknum == 0%2:
                     movepair[0] = square
                 if clicknum == 1%2:
                     movepair[1] = square
-
-
-
 
         vis.draw_from_grid(board)
         d_surf.blit(vis.my_surf, (0,0))

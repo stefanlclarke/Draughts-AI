@@ -1,7 +1,5 @@
 import numpy as np
 import random
-#Parameters
-#board_size = 6
 
 def startingpos(board):
     boardnew = board.copy()
@@ -117,6 +115,7 @@ def ismovelegal(board, tile, direction, player):
                     return False
 
 def get_legal_moves(board,player):
+    moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
     n = len(board)
     moves_considered = []
     for i in range(n):
@@ -172,7 +171,7 @@ def move(board1, piece, number, player):
         board[moveloc[0], moveloc[1]] = 0
         board[takeloc[0], takeloc[1]] = takecounter
         more_hops = check_further_moves(board, takeloc, player)
-        print("MORE HOPS:", more_hops)
+        #print("MORE HOPS:", more_hops)
         if len(more_hops)==0:
             #print("no more hops")
             board[takeloc[0], takeloc[1]] = counter
@@ -194,9 +193,8 @@ def checkforking(board):
         board[0][x]=-2
     return board
 
-moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
-
 def check_further_moves(board, piece, player):
+    moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
     #print(piece)
     #print(abs(board[piece[0], piece[1]]))
     if abs(board[piece[0], piece[1]])==1 or abs(board[piece[0], piece[1]])==3:
@@ -210,26 +208,12 @@ def check_further_moves(board, piece, player):
         a=0
         b=4
     movespaces = [(moves[i], piece+moves[i]) for i in range(a,b)]
-    print("MOVESPACES:", movespaces)
+    #print("MOVESPACES:", movespaces)
     for x in movespaces:
         print(x[0], x[1], ismovelegal(board, piece, x[0], player))
     available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[0], player) and board[x[1][0], x[1][1]]==-player]
-    print("AVAILABLE HOPS:", available_hops)
+    #print("AVAILABLE HOPS:", available_hops)
     return available_hops
-
-#def play(loc1, loc2, move):
-#    victor, stalemate = game.makemove(np.array([loc1, loc2]), move)
-#    #print(f"Victor: {victor}")
-#    #print(f"Stalemate? {stalemate}")
-#    print("Game Board:")
-#    print(game.board)
-#    if victor != 0:
-#        print("GAME OVER!")
-#        game.reset()
-#    if stalemate:
-#        print("STALEMATE")
-#        game.reset()
-#    return victor
 
 def checkwin(board):
     piecesp = board.copy()
@@ -250,6 +234,7 @@ def checkwin(board):
         return 0
 
 def checkstalemate(board, player):
+    moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
     print("Player:", player)
     pieces = np.argwhere(player*board > 0)
     print(pieces)

@@ -47,8 +47,3 @@ def makeboard():
         colour=pygame.Color("chocolate1")
         d_surf.blit(vis.my_surf, (0,0))
         pygame.display.update()
-
-makeboard()
-get_random_move(game.board, -1)
-p=get_random_move(game.board, -1)
-p
