@@ -28,9 +28,9 @@ def makeboard():
                 victor, playing = play(AIMOVE[0][0], AIMOVE[0][1], AIMOVE[1])
                 print("PLAYING:"+str(playing))
             if playing==-1:
-                moving=1
-            elif playing==1:
                 moving=0
+            elif playing==1:
+                moving=2
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
