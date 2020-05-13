@@ -203,8 +203,8 @@ def get_random_move(board,player):
         return 0
 
 def reset_3s_and_4s(board, player):
-    threes = np.argwhere(board=3*player)
-    fours = np.argwhere(board=4*player)
+    threes = np.argwhere(board==3*player)
+    fours = np.argwhere(board==4*player)
     for three in threes:
         board[three[0], three[1]]=player*1
     for four in fours:
