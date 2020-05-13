@@ -1,5 +1,5 @@
 import gamefile
-from gamefile import board
+from gamefile import board, can_any_piece_take
 import numpy as np
 
 board_size=6
@@ -11,6 +11,8 @@ def play(loc1, loc2, move):
     print(f"Stalemate? {stalemate}")
     print("Game Board:")
     print(game.board)
+    takkkk=can_any_piece_take(game.board)
+    print(takkkk)
     if victor != 0:
         print("GAME OVER!")
         game.reset()

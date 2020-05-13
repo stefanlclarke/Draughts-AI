@@ -56,6 +56,7 @@ def isinboard(board, space):
 
 def ismovelegal(board, tile, direction, player):
     b = sum(sum(np.isin(board,3))) + sum(sum(np.isin(board,-3))) + sum(sum(np.isin(board,4))) + sum(sum(np.isin(board,-4)))
+    mid_hop=False
     if b != 0:
         mid_hop=True
         if abs(board[tile[0], tile[1]]) == 1 or abs(board[tile[0], tile[1]]) == 2:
@@ -128,6 +129,44 @@ def get_legal_moves(board,player):
                 if ismovelegal(board, np.array([i,j]) ,  moves[d], player):
                     moves_considered.append( ( (i,j),d) )
     return moves_considered
+
+def can_this_piece_take(board, player, location):
+    if abs(board[location[0], location[1]])==3 or abs(board[location[0], location[1]])==4:
+        return (True, [])
+    if board[location[0], location[1]]==-1 or board[location[0], location[1]]==-3:
+        possible_movements=[np.array([-1,-1]), np.array([-1,1])]
+    elif board[location[0], location[1]]==1 or board[location[0], location[1]]==3:
+        possible_movements=[np.array([1,-1]), np.array([1,1])]
+    elif board[location[0], location[1]]==-2 or board[location[0], location[1]]==2:
+        possible_movements=[np.array([-1,-1]), np.array([-1,1]), np.array([1,-1]), np.array([1,1])]
+    moves_which_are_taking=[]
+    for move in possible_movements:
+        legal=ismovelegal(board, location, move, player)
+        if legal:
+            move_to=location+move
+            piece_in_position=board[move_to[0], move_to[1]]
+            if -player*piece_in_position>0:
+                moves_which_are_taking.append(move.copy())
+    if moves_which_are_taking != []:
+        return (True, moves_which_are_taking)
+    else:
+        return (False, [])
+
+def can_any_piece_take(board):
+    pieces_p=np.argwhere(x>0)
+    pieces_m=np.argwhere(x<0)
+    PIECES_P_CAN_TAKE=[]
+    PIECES_M_CAN_TAKE=[]
+    for piece in pieces_p:
+        can_this_take=can_this_piece_take(board, 1, piece)
+        if can_this_take:
+            PIECES_P_CAN_TAKE.append(piece)
+    for piece in pieces_m:
+        can_this_take=can_this_piece_take(board, -1, piece)
+        if can_this_take:
+            PIECES_P_CAN_TAKE.append(piece)
+    return(PIECES_P_CAN_TAKE, PIECES_M_CAN_TAKE)
+
 
 def get_random_move(board,player):
     moves_considered = get_legal_moves(board,  player)
