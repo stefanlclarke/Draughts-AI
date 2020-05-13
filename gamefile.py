@@ -31,6 +31,7 @@ class board(object):
 
     def makemove(self, piece, number):
         board, nextmove = move(self.board, piece, number, self.player)
+        board = find_forced_moves(board, nextmove)
         print("MOVING NEXT:", nextmove)
         board = checkforking(board)
         self.board = board
@@ -159,14 +160,31 @@ def can_any_piece_take(board):
     PIECES_M_CAN_TAKE=[]
     for piece in pieces_p:
         can_this_take=can_this_piece_take(board, 1, piece)
-        if can_this_take:
-            PIECES_P_CAN_TAKE.append(piece)
+        if can_this_take[0]:
+            PIECES_P_CAN_TAKE.append((piece, can_this_take[1]))
     for piece in pieces_m:
         can_this_take=can_this_piece_take(board, -1, piece)
-        if can_this_take:
-            PIECES_P_CAN_TAKE.append(piece)
+        if can_this_take[0]:
+            PIECES_P_CAN_TAKE.append((piece, can_this_take[1]))
     return(PIECES_P_CAN_TAKE, PIECES_M_CAN_TAKE)
 
+def find_forced_moves(board, player):
+    taking_pieces=can_any_piece_take(board)
+    if player==1:
+        for piece_ in taking_pieces[0]:
+            piece=piece_[0]
+            if board[piece[0], piece[1]]==1:
+                board[piece[0], piece[1]]=3
+            elif board[piece[0], piece[1]]==2:
+                board[piece[0], piece[1]]=4
+    elif player==-1:
+        for piece_ in taking_pieces[1]:
+            piece=piece_[0]
+            if board[piece[0], piece[1]]==-1:
+                board[piece[0], piece[1]]=-3
+            elif board[piece[0], piece[1]]==-2:
+                board[piece[0], piece[1]]=-4
+    return board
 
 def get_random_move(board,player):
     moves_considered = get_legal_moves(board,  player)
