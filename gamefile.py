@@ -65,6 +65,7 @@ def ismovelegal(board, tile, direction, player):
             return False
         if isinboard(board, movespace) == False:
             #print("Move not in board")
+            return False
         if abs(board[tile[0], tile[1]]) == 1 or abs(board[tile[0], tile[1]]) == 2:
             return False
     if abs(board[tile[0], tile[1]]) == 2 or abs(board[tile[0], tile[1]])==4:
