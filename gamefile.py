@@ -31,6 +31,8 @@ class board(object):
 
     def makemove(self, piece, number):
         board, nextmove = move(self.board, piece, number, self.player)
+        notnext=-nextmove
+        board = reset_3s_and_4s(board, player)
         board = find_forced_moves(board, nextmove)
         print("MOVING NEXT:", nextmove)
         board = checkforking(board)
@@ -199,6 +201,15 @@ def get_random_move(board,player):
         return moves_considered[random.randint(0,n-1) ]
     else:
         return 0
+
+def reset_3s_and_4s(board, player):
+    threes = np.argwhere(board=3*player)
+    fours = np.argwhere(board=4*player)
+    for three in threes:
+        board[three[0], three[1]]=player*1
+    for four in fours:
+        board[four[0], four[1]]=player*2
+    return board
 
 ##
 def move(board1, piece, number, player):
