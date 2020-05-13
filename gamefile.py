@@ -153,8 +153,8 @@ def can_this_piece_take(board, player, location):
         return (False, [])
 
 def can_any_piece_take(board):
-    pieces_p=np.argwhere(x>0)
-    pieces_m=np.argwhere(x<0)
+    pieces_p=np.argwhere(board>0)
+    pieces_m=np.argwhere(board<0)
     PIECES_P_CAN_TAKE=[]
     PIECES_M_CAN_TAKE=[]
     for piece in pieces_p:
