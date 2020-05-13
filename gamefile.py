@@ -56,6 +56,8 @@ def isinboard(board, space):
 
 
 def ismovelegal(board, tile, direction, player):
+    movespace = tile + direction
+    takespace = tile + 2*direction
     b = sum(sum(np.isin(board,3))) + sum(sum(np.isin(board,-3))) + sum(sum(np.isin(board,4))) + sum(sum(np.isin(board,-4)))
     mid_hop=False
     if b != 0:
@@ -72,8 +74,6 @@ def ismovelegal(board, tile, direction, player):
         king = True
     else:
         king = False
-    movespace = tile + direction
-    takespace = tile + 2*direction
     if mid_hop==True:
         if board[movespace[0],movespace[1]]==0:
             return False
