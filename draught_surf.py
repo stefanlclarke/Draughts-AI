@@ -1,5 +1,6 @@
 import pygame
 from pygame import gfxdraw
+import numpy as np
 
 def find_square( corner , click , square_size):
     # Finds the square clicked on from the pixel and corner
