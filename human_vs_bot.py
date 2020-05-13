@@ -20,7 +20,7 @@ def makeboard():
     MOVETHISPIECE=0
     moving=0
     while True: # main game loop
-    print(moving)
+        print(moving)
         if moving==1:
             AIMOVE=get_random_move(game.board, 1)
             print('MOVE' + str(AIMOVE))
