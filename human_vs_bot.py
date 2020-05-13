@@ -53,9 +53,9 @@ def makeboard():
                     if key_name=='d':
                         victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 3)
                     if playing==-1:
-                        moving=1
-                    elif playing==1:
                         moving=0
+                    elif playing==1:
+                        moving=1
         vis.draw_from_grid(game.board)
         colour=pygame.Color("chocolate1")
         d_surf.blit(vis.my_surf, (0,0))
