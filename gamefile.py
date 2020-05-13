@@ -173,7 +173,7 @@ def can_any_piece_take(board):
     for piece in pieces_m:
         can_this_take=can_this_piece_take(board, -1, piece)
         if can_this_take[0]:
-            PIECES_P_CAN_TAKE.append((piece, can_this_take[1]))
+            PIECES_M_CAN_TAKE.append((piece, can_this_take[1]))
     return(PIECES_P_CAN_TAKE, PIECES_M_CAN_TAKE)
 
 def find_forced_moves(board, player):
