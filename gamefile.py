@@ -32,7 +32,7 @@ class board(object):
     def makemove(self, piece, number):
         board, nextmove = move(self.board, piece, number, self.player)
         notnext=-nextmove
-        board = reset_3s_and_4s(board, player)
+        board = reset_3s_and_4s(board, notnext)
         board = find_forced_moves(board, nextmove)
         print("MOVING NEXT:", nextmove)
         board = checkforking(board)
