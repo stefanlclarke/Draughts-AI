@@ -57,7 +57,8 @@ def isinboard(board, space):
 def ismovelegal(board, tile, direction, player):
     b = sum(sum(np.isin(board,3))) + sum(sum(np.isin(board,-3))) + sum(sum(np.isin(board,4))) + sum(sum(np.isin(board,-4)))
     if b != 0:
-        if abs(board[tile[0], tile[1]]) == 1:
+        mid_hop=True
+        if abs(board[tile[0], tile[1]]) == 1 or abs(board[tile[0], tile[1]]) == 2:
             return False
     if abs(board[tile[0], tile[1]]) == 2 or abs(board[tile[0], tile[1]])==4:
         king = True
@@ -65,6 +66,9 @@ def ismovelegal(board, tile, direction, player):
         king = False
     movespace = tile + direction
     takespace = tile + 2*direction
+    if mid_hop==True:
+        if board[movespace[0],movespace[1]]==0:
+            return False
     if isinboard(board, tile) == False:
         #print("Tile not in board")
         return False
@@ -128,8 +132,12 @@ def get_legal_moves(board,player):
 def get_random_move(board,player):
     moves_considered = get_legal_moves(board,  player)
     n = len(moves_considered)
-    return moves_considered[random.randint(0,n-1) ]
+    if n>0:
+        return moves_considered[random.randint(0,n-1) ]
+    else:
+        return 0
 
+##
 def move(board1, piece, number, player):
     board = board1
     counter = board[piece[0], piece[1]]
@@ -209,8 +217,8 @@ def check_further_moves(board, piece, player):
         b=4
     movespaces = [(moves[i], piece+moves[i]) for i in range(a,b)]
     #print("MOVESPACES:", movespaces)
-    for x in movespaces:
-        print(x[0], x[1], ismovelegal(board, piece, x[0], player))
+    #for x in movespaces:
+        #print(x[0], x[1], ismovelegal(board, piece, x[0], player))
     available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[0], player) and board[x[1][0], x[1][1]]==-player]
     #print("AVAILABLE HOPS:", available_hops)
     return available_hops
@@ -220,8 +228,8 @@ def checkwin(board):
     piecesm = board.copy()
     piecesp[piecesp<0]=0
     piecesm[piecesm>0]=0
-    print(piecesp)
-    print(piecesm)
+    #print(piecesp)
+    #print(piecesm)
     mwin = sum(sum(piecesp))
     pwin = sum(sum(piecesm))
     if mwin == 0:
@@ -237,10 +245,10 @@ def checkstalemate(board, player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
     print("Player:", player)
     pieces = np.argwhere(player*board > 0)
-    print(pieces)
+    #print(pieces)
     for piece in pieces:
         for move in moves:
-            print(piece, move, player, ismovelegal(board, piece, move, player))
+            #print(piece, move, player, ismovelegal(board, piece, move, player))
             if ismovelegal(board, piece, move , player):
                 return False
     return True
