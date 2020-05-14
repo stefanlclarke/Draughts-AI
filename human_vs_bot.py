@@ -30,7 +30,7 @@ def makeboard():
             if playing==-1:
                 moving=0
             elif playing==1:
-                moving=2
+                moving=1
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
