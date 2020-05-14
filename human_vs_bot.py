@@ -4,14 +4,15 @@ from gamefile import get_random_move
 import play
 import pygame
 from pygame import gfxdraw
-from play import game, play
+from play import game, play,
 from draught_surf import DraughtVisualiser, test, find_square
+from parameters import board_size, screen_size
 
 def makeboard():
     pygame.init()
     game.reset()
-    d_surf = pygame.display.set_mode((800,800))
-    vis = DraughtVisualiser(800,6)
+    d_surf = pygame.display.set_mode((screen_size,screen_size))
+    vis = DraughtVisualiser(screen_size,board_size)
     vis.draw_board()
     d_surf.blit(vis.my_surf, (0,0))
     pygame.display.set_caption("Test!")
@@ -39,7 +40,7 @@ def makeboard():
                 if event.type == pygame.MOUSEBUTTONUP:
 
                     pos = pygame.mouse.get_pos()
-                    square = find_square( (0,0), pos, 800/6)
+                    square = find_square( (0,0), pos, screen_size/board_size)
                     MOVETHISPIECE=square
                 if MOVETHISPIECE != 0:
                     if event.type==pygame.KEYDOWN:
