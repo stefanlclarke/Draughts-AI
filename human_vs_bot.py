@@ -41,21 +41,22 @@ def makeboard():
                     pos = pygame.mouse.get_pos()
                     square = find_square( (0,0), pos, 800/6)
                     MOVETHISPIECE=square
-                if event.type==pygame.KEYDOWN:
-                    moving=1
-                    key_name=pygame.key.name(event.key)
-                    if key_name=='w':
-                        victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 0)
-                    if key_name=='a':
-                        victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 1)
-                    if key_name=='s':
-                        victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 2)
-                    if key_name=='d':
-                        victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 3)
-                    if playing==-1:
-                        moving=0
-                    elif playing==1:
+                if MOVETHISPIECE != 0:
+                    if event.type==pygame.KEYDOWN:
                         moving=1
+                        key_name=pygame.key.name(event.key)
+                        if key_name=='w':
+                            victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 0)
+                        if key_name=='a':
+                            victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 1)
+                        if key_name=='s':
+                            victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 2)
+                        if key_name=='d':
+                            victor, playing = play(MOVETHISPIECE[0], MOVETHISPIECE[1], 3)
+                        if playing==-1:
+                            moving=0
+                        elif playing==1:
+                            moving=1
         vis.draw_from_grid(game.board)
         colour=pygame.Color("chocolate1")
         d_surf.blit(vis.my_surf, (0,0))
