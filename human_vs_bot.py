@@ -4,7 +4,7 @@ from gamefile import get_random_move
 import play
 import pygame
 from pygame import gfxdraw
-from play import game, play,
+from play import game, play
 from draught_surf import DraughtVisualiser, test, find_square
 from parameters import board_size, screen_size
 
