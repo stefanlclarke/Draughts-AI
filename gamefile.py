@@ -34,7 +34,7 @@ class board(object):
         notnext=-nextmove
         board = reset_3s_and_4s(board, notnext)
         board = find_forced_moves(board, nextmove)
-        print("MOVING NEXT:", nextmove)
+        #print("MOVING NEXT:", nextmove)
         board = checkforking(board)
         self.board = board
         self.player = nextmove
@@ -307,17 +307,17 @@ def checkwin(board):
     mwin = sum(sum(piecesp))
     pwin = sum(sum(piecesm))
     if mwin == 0:
-        print("VICTORY!")
+        #print("VICTORY!")
         return -1
     elif pwin == 0:
-        print("VICTORY!")
+        #print("VICTORY!")
         return 1
     else:
         return 0
 
 def checkstalemate(board, player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
-    print("Player:", player)
+    #print("Player:", player)
     pieces = np.argwhere(player*board > 0)
     #print(pieces)
     for piece in pieces:
