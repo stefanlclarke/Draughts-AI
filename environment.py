@@ -13,35 +13,36 @@ class DraughtsEnvironment(gym.Env):
 
         self.win_reward = 10
         self.stalemate_reward = 2
+        self.capture_reward = 0.1
+        self.king_reward = 0.2
 
     def reset(self):
         board.reset()
 
     def step(self, action):
-        victor, stalemate = self._take_action(action)
+        victor, stalemate, took, king = self._take_action(action)
         new_board = np.copy(self.board)
+        reward = 0
         if victor != 0:
-            reward = self.win_reward
+            reward += self.win_reward
             done = True
         elif stalemate != 0:
-            reward = self.stalemate_reward
+            reward += self.stalemate_reward
             done = True
         else:
             done = False
-            reward = 0
+        if took == True:
+            reward += self.capture_reward
+        if king == True:
+            reward += self.king_reward
         return new_board, reward, done
 
     def _take_action(self, action):
-        victor, stalemate = self.board.makemove(action[0], action[1])
-        return victor, stalemate
+        victor, stalemate, took, king = self.board.makemove(action[0], action[1])
+        return victor, stalemate, took, king
 
     def render(self, mode='human', close=False):
         print(self.board.board)
 
     def _next_observation(self):
         return board.board
-
-env=DraughtsEnvironment(6)
-env.render()
-env.step([np.array([4,0]), 1])
-env.render()

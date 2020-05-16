@@ -6,7 +6,7 @@ from parameters import board_size
 game = board(board_size)
 
 def play(loc1, loc2, move):
-    victor, stalemate = game.makemove(np.array([loc1, loc2]), move)
+    victor, stalemate, took = game.makemove(np.array([loc1, loc2]), move)
     print(f"Victor: {victor}")
     print(f"Stalemate? {stalemate}")
     print("Game Board:")

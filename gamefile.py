@@ -30,17 +30,17 @@ class board(object):
         self.player = -1
 
     def makemove(self, piece, number):
-        board, nextmove = move(self.board, piece, number, self.player)
+        board, nextmove, took = move(self.board, piece, number, self.player)
         notnext=-nextmove
         board = reset_3s_and_4s(board, notnext)
         board = find_forced_moves(board, nextmove)
         #print("MOVING NEXT:", nextmove)
-        board = checkforking(board)
+        board, king = checkforking(board)
         self.board = board
         self.player = nextmove
         victor = checkwin(self.board)
         stalemate = checkstalemate(self.board, self.player)
-        return victor, stalemate
+        return victor, stalemate, took, king
 
     def reset(self):
         self.board = startingpos(np.zeros([self.board_size, self.board_size]))
@@ -239,7 +239,7 @@ def move(board1, piece, number, player):
     legal = ismovelegal(board, piece, move, player)
     if legal == False:
         #print("ILLEGAL MOVE")
-        return (board, player)
+        return (board, player, False)
 
     if abs(counter)==1.0 or abs(counter)==3.0:
         takecounter = 3*player
@@ -257,23 +257,26 @@ def move(board1, piece, number, player):
         if len(more_hops)==0:
             #print("no more hops")
             board[takeloc[0], takeloc[1]] = counter
-            return (board, -player)
+            return (board, -player, True)
         else:
-            return (board, player)
+            return (board, player, True)
     else:
         board[piece[0], piece[1]] = 0
         board[moveloc[0], moveloc[1]] = counter
 
-        return(board, -player)
+        return(board, -player, False)
 
 def checkforking(board):
     kings1 = [i for i,x in enumerate(board[-1]) if x == 1]
     kings_1 = [i for i,x in enumerate(board[0]) if x == -1]
+    king = False
     for i,x in enumerate(kings1):
+        king = True
         board[-1][x] = 2
     for i,x in enumerate(kings_1):
+        king = True
         board[0][x]=-2
-    return board
+    return board, king
 
 def check_further_moves(board, piece, player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
