@@ -21,7 +21,7 @@ class DraughtsEnvironment(gym.Env):
 
     def step(self, action):
         victor, stalemate, took, king = self._take_action(action)
-        new_board = np.copy(self.board)
+        new_board = np.copy(self.board.board)
         reward = 0
         if victor != 0:
             reward += self.win_reward
@@ -38,7 +38,7 @@ class DraughtsEnvironment(gym.Env):
         return new_board, reward, done
 
     def _take_action(self, action):
-        victor, stalemate, took, king = self.board.makemove(action[0], action[1])
+        victor, stalemate, took, king = self.board.makemove(np.array([action[0], action[1]]), action[2])
         return victor, stalemate, took, king
 
     def render(self, mode='human', close=False):
