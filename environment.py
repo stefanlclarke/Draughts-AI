@@ -21,7 +21,7 @@ class DraughtsEnvironment(gym.Env):
 
     def step(self, action):
         victor, stalemate, took, king = self._take_action(action)
-        new_board = np.copy(self.board.board)
+        new_board = self._next_observation()
         reward = 0
         if victor != 0:
             reward += self.win_reward
@@ -45,4 +45,11 @@ class DraughtsEnvironment(gym.Env):
         print(self.board.board)
 
     def _next_observation(self):
-        return board.board
+        return self.get_state()
+
+    def get_state(self):
+        flatboard = np.copy(self.board.board).flatten()
+        one_hot_board = np.zeros((flatboard.size, 8))
+        one_hot_board[np.arange(flatboard.size), flatboard.astype(int)]=1
+        one_hot_board = np.delete(one_hot_board, 0, 1)
+        return one_hot_board
