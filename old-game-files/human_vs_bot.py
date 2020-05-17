@@ -63,7 +63,5 @@ def makeboard():
         d_surf.blit(vis.my_surf, (0, 0))
         pygame.display.update()
 
-
-
 if __name__ == "__main__":
     makeboard()

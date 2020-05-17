@@ -1,0 +1,6 @@
+README.md
+gym_draughts.egg-info/PKG-INFO
+gym_draughts.egg-info/SOURCES.txt
+gym_draughts.egg-info/dependency_links.txt
+gym_draughts.egg-info/requires.txt
+gym_draughts.egg-info/top_level.txt

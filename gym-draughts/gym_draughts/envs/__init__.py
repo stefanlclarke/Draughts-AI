@@ -1,0 +1,1 @@
+from gym_draughts.envs.draughts_env import DraughtsEnvironment
