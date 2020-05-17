@@ -1,2 +1,0 @@
-from human_vs_bot import makeboard
-from environment import DraughtsEnvironment
