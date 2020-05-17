@@ -10,35 +10,38 @@ def find_square( corner , click , square_size):
     return (square_x, square_y)
 
 class DraughtVisualiser:
+    "Helps displaying by providing a pygame surface that may be updated from an array."
     def __init__(self, screen_size, board_size):
         self.my_surf = pygame.Surface((screen_size,screen_size))
         self.b_size = board_size
         self.tile_size = screen_size / board_size
 
     def draw_square(self, x, y, colour):
-        to_draw = pygame.Rect( x*self.tile_size, y*self.tile_size, self.tile_size , self.tile_size)
+        "Draws a single square at tile x,y w with colour"
+        to_draw = pygame.Rect(x*self.tile_size, y*self.tile_size, self.tile_size , self.tile_size)
         gfxdraw.box(self.my_surf, to_draw, colour)
 
     def draw_piece(self, x, y, colour):
-        gfxdraw.filled_circle( self.my_surf,  int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
+        "Draws a piece at the tile x,y in the colour given"
+        gfxdraw.filled_circle(self.my_surf, int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
 
     def draw_from_grid(self, grid):
-        self.my_surf.fill(pygame.Color(0,0,0))
+        self.my_surf.fill(pygame.Color(0, 0, 0))
         self.draw_board()
-        for x in range(self.b_size):
+        for x_cord in range(self.b_size):
             for y in range(self.b_size):
-                val = grid[x][y]
+                val = grid[x_cord][y]
                 if val == 1 or  val == 3:
-                    self.draw_piece(x,y, pygame.Color("deeppink1"))
+                    self.draw_piece(x_cord, y, pygame.Color("deeppink1"))
                 elif val == 2  or val == 4:
-                    self.draw_piece(x,y, pygame.Color("deeppink4"))
+                    self.draw_piece(x_cord, y, pygame.Color("deeppink4"))
                 elif val == -1 or val == -3:
-                    self.draw_piece(x,y, pygame.Color("darkgoldenrod1"))
+                    self.draw_piece(x_cord, y, pygame.Color("darkgoldenrod1"))
                 elif val == -2  or val == -4:
-                    self.draw_piece(x,y, pygame.Color("darkgoldenrod4"))
+                    self.draw_piece(x_cord, y, pygame.Color("darkgoldenrod4"))
 
                 if val in [-4,-3,3,4]:
-                    gfxdraw.filled_circle(self.my_surf,   int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
+                    gfxdraw.filled_circle(self.my_surf,   int((x_cord+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
 
 
     def draw_board(self):
