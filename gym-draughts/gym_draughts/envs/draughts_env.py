@@ -11,7 +11,7 @@ class DraughtsEnvironment(gym.Env):
 
     def __init__(self):
         size=6
-        rewards=[10,2,0,0]
+        rewards=[10,2,0,0,-3]
 
         self.size=size
         self.board=board(self.size)
@@ -20,12 +20,16 @@ class DraughtsEnvironment(gym.Env):
         self.stalemate_reward = rewards[1]
         self.capture_reward = rewards[2]
         self.king_reward = rewards[3]
+        self.illegal_reward = rewards[4]
+
+        self.player = self.board.player
+        self.gameboard = self.board.board
 
     def reset(self):
         self.board.reset()
 
     def step(self, action):
-        victor, stalemate, took, king = self._take_action(action)
+        victor, stalemate, took, king, illegal = self._take_action(action)
         new_board = self._next_observation()
         reward = 0
         if victor != 0:
@@ -40,11 +44,19 @@ class DraughtsEnvironment(gym.Env):
             reward += self.capture_reward
         if king == True:
             reward += self.king_reward
+        if illegal == True:
+            reward = self.illegal_reward
         return new_board, reward, done
 
     def _take_action(self, action):
+        legality = self.ismovelegal(action)
+        if legality == False:
+            action = self.random_move()
+            illegal = True
+        else:
+            illegal = False
         victor, stalemate, took, king = self.board.makemove(np.array([action[0], action[1]]), action[2])
-        return victor, stalemate, took, king
+        return victor, stalemate, took, king, illegal
 
     def render(self, mode='human', close=False):
         print(self.board.board)
@@ -61,10 +73,15 @@ class DraughtsEnvironment(gym.Env):
         return self.board.board
 
     def random_move(self):
-        return get_random_move(self.board.board, self.board.player)
+        move = get_random_move(self.board.board, self.board.player)
+        return (move[0][0], move[0][1], move[1])
 
-    def ismovelegal(self, tile, direction):
-        return ismovelegal(self.board.board, tile, direction, self.board.player)
+    def ismovelegal(self, action):
+        tile = np.array([action[0], action[1]])
+        direction = action[2]
+        moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
+        move = moves[direction]
+        return ismovelegal(self.board.board, tile, move, self.board.player)
 
 
 def startingpos(board):

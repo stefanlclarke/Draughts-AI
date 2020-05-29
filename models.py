@@ -3,6 +3,7 @@ import torch as T
 import torch.nn as nn
 import gym
 import gym_draughts
+import numpy as np
 
 dim=6
 
@@ -74,11 +75,21 @@ class Actor:
         self.fc_location = nn.Linear(self.l2, self.out)
         self.fc_moves = nn.Linear(self.l2, self.moves)
         self.relu = nn.ReLU()
-        self.softmax = nn.Softmax()
+        self.softmax_loc = nn.Softmax()
+        self.softmax_move = nn.Softmax()
 
     def forward(self, input):
         o1 = self.relu(self.fc1(input))
         o2 = self.relu(self.fc2(o1))
-        loc = self.softmax(self.fc_location(o2))
-        move = self.softmax(self.fc_moves(o2))
+        loc = self.softmax_loc(self.fc_location(o2))
+        move = self.softmax_move(self.fc_moves(o2))
         return loc, move
+
+    def forward_from_board(self, input):
+        onehot = board_to_onehot(input)
+        onehot = T.from_numpy(onehot).float()
+        loc, move = self.forward(onehot)
+        loc = loc.detach().numpy()
+        move = move.detach().numpy()
+        m = output_to_move(loc, move)
+        return loc, move, m
