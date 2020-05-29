@@ -1,4 +1,5 @@
 README.md
+setup.py
 gym_draughts.egg-info/PKG-INFO
 gym_draughts.egg-info/SOURCES.txt
 gym_draughts.egg-info/dependency_links.txt

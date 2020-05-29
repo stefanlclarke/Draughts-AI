@@ -10,7 +10,7 @@ class DraughtsEnvironment(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        size=10
+        size=6
         rewards=[10,2,0,0]
 
         self.size=size
@@ -53,11 +53,19 @@ class DraughtsEnvironment(gym.Env):
         return self.get_state()
 
     def get_state(self):
-        flatboard = np.copy(self.board.board).flatten()
-        one_hot_board = np.zeros((flatboard.size, 8))
-        one_hot_board[np.arange(flatboard.size), flatboard.astype(int)]=1
-        one_hot_board = np.delete(one_hot_board, 0, 1)
-        return one_hot_board
+        #flatboard = np.copy(self.board.board).flatten()
+        #one_hot_board = np.zeros((flatboard.size, 8))
+        #one_hot_board[np.arange(flatboard.size), flatboard.astype(int)]=1
+        #one_hot_board = np.delete(one_hot_board, 0, 1)
+        #return one_hot_board
+        return self.board.board
+
+    def random_move(self):
+        return get_random_move(self.board.board, self.board.player)
+
+    def ismovelegal(self, tile, direction):
+        return ismovelegal(self.board.board, tile, direction, self.board.player)
+
 
 def startingpos(board):
     boardnew = board.copy()
