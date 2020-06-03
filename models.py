@@ -39,31 +39,45 @@ def output_to_move(out, move):
     for item in locations:
         for thing in item:
             flatlist.append(thing)
-    arg = np.argmax(out)
+    arg = np.random.choice(int(dim**2/2), p=out)
     posflat = flatlist[arg]
     ypos = posflat//dim
     xpos = posflat-ypos*dim
-    move = np.argmax(move)
-    return (xpos, ypos, move)
+    move = np.random.choice(4, p=move)
+    return (xpos, ypos, move), arg
+
+def move_to_onehot(move):
+    loc = dim*move[0]+move[1]
+    move = move[2]
+    loc1h = np.zeros(dim**2)
+    loc1h[loc]=1
+    move1h = np.zeros(4)
+    move1h[move]=1
+    loc1hd = delete_diagonals(loc1h)
+    return loc1h, move1h
 
 class Memory:
     def __init__(self, maxframes):
         self.memory = []
         self.maxframes = maxframes
 
-    def addstate(self, prev_state, loc, move, step_output):
+    def addstate(self, prev_state, loc, move, movemade, step_output):
         prev = board_to_onehot(prev_state)
         next = board_to_onehot(step_output[0])
         reward = step_output[1]
         done = step_output[2]
-        self.memory.append([prev, loc, move, next, reward, done])
+        illegal = step_output[3]
+        self.memory.append([prev, loc, move, movemade, next, reward, done, illegal])
 
     def erase_old(self):
         self.memory = self.memory[-self.maxframes:-1]
 
-class Actor:
+    def reset(self):
+        self.memory = []
+
+class Actor(T.nn.Module):
     def __init__(self, input_dim, l1, l2, locations, moves):
-        #super(Network, self).__init__()
+        super(Actor, self).__init__()
         self.indim = input_dim
         self.l1 = l1
         self.l2 = l2
@@ -89,7 +103,39 @@ class Actor:
         onehot = board_to_onehot(input)
         onehot = T.from_numpy(onehot).float()
         loc, move = self.forward(onehot)
-        loc = loc.detach().numpy()
-        move = move.detach().numpy()
-        m = output_to_move(loc, move)
-        return loc, move, m
+        loc1 = loc.detach().numpy()
+        move1 = move.detach().numpy()
+        m, i = output_to_move(loc1, move1)
+        return loc, move, m, i
+
+class Critic(T.nn.Module):
+    def __init__(self, input_dim, l1, l2, l3):
+        super(Critic, self).__init__()
+        self.indim = input_dim
+        self.l1 = l1
+        self.l2 = l2
+        self.l3 = l3
+
+        self.fc1 = nn.Linear(self.indim*8, self.l1)
+        self.fc2 = nn.Linear(self.l1, self.l2)
+        self.fc3 = nn.Linear(self.l2, self.l3)
+        self.fc4 = nn.Linear(self.l3, 1)
+        self.relu = nn.ReLU()
+
+    def forward(self, input):
+        o1 = self.relu(self.fc1(input))
+        o2 = self.relu(self.fc2(o1))
+        o3 = self.relu(self.fc3(o2))
+        out = self.fc4(o3)
+        return out
+
+    def forward_from_board(self, onehot):
+        onehot = T.from_numpy(onehot).float()
+        Q = self.forward(onehot)
+        return Q
+
+class AC(T.nn.Module):
+    def __init__(self, input_dim, actor_layers, critic_layers, locs, moves):
+        super(AC, self).__init__()
+        self.actor = Actor(input_dim, actor_layers[0], actor_layers[1], locs, moves)
+        self.critic = Critic(input_dim, critic_layers[0], critic_layers[1], critic_layers[2])
