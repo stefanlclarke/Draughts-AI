@@ -26,6 +26,8 @@ class DraughtsEnvironment(gym.Env):
         self.player = self.board.player
         self.gameboard = self.board.board
 
+        self.has_screen = False 
+
     def reset(self):
         #print('GAME OVER')
         self.board.reset()
@@ -63,6 +65,9 @@ class DraughtsEnvironment(gym.Env):
         return victor, stalemate, took, king, illegal
 
     def render(self, mode='human', close=False):
+        if not self.has_screen:
+            self.has_screen = True
+            #self.vis = 
         print(self.board.board)
 
     def _next_observation(self):

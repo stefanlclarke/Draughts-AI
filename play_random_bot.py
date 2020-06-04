@@ -132,15 +132,30 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
         critic_loss = Qerrors.mean()
         loss = actor_loss + critic_loss
 
+<<<<<<< HEAD
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+=======
+            Qerrors = T.stack(Qerrors)
+            logprobs = T.stack(logprobs)
+            nextQs = T.stack(nextQs)
+            nextQs.detach()
+            actor_loss = (-logprobs*nextQs).mean()
+            critic_loss = Qerrors.mean()
+            loss = actor_loss + critic_loss
+
+            optimizer.zero_grad()
+            loss.backward(retain_graph=True)
+            optimizer.step()
+>>>>>>> 9aed6fd56bc30132072147a1b51d4d3aee87b140
 
         win_prop = wins/steps_per_loop
         move_legalities = [memory.memory[x][-1] for x in range(len(memory.memory))]
         legal_count = move_legalities.count(True)
         legal_prop = legal_count/len(move_legalities)
 
+        print(f"Loop: {loops_elapsed}")
         print(f"ILLEGAL PROPORTION: {legal_prop}")
         print(f"WIN PROPORTION: {win_prop}")
 
@@ -149,9 +164,13 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
             if loops_elapsed > loops:
                 training = False
 
+<<<<<<< HEAD
 for name, param in ac.named_parameters():
     print(name, param.data)
 
 train_against_random(1, loops=1000, random_moves=True)
+=======
+train_against_random(30, loops=20)
+>>>>>>> 9aed6fd56bc30132072147a1b51d4d3aee87b140
 [memory.memory[i][-3] for i in range(len(memory.memory))]
 env.render()
