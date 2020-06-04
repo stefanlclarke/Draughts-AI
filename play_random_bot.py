@@ -10,12 +10,12 @@ critic_layers = [10, 10, 10]
 memory = Memory(2000)
 ac = AC(18, actor_layers, critic_layers, 18, 4)
 gamma = 0.9
-learning_rate = 3e-3
+learning_rate = 3e-4
 optimizer = T.optim.Adam(ac.parameters(), lr = learning_rate)
 
 env = gym.make('draughts-v0')
 
-def play_against_random():
+def play_against_random(random_moves=False):
     maxmoves = 10000
     num_moves = 0
     env.reset()
@@ -31,6 +31,12 @@ def play_against_random():
                 firstmove = False
             oldstate = env.get_state()
             loc, move, m, i = ac.actor.forward_from_board(env.board.board)
+            if random_moves:
+                m = env.random_move()
+                m_1h = move_to_onehot(m)
+                D = delete_diagonals(m_1h[0])
+                #print(D)
+                i = np.random.choice(18, p=D)
             newstate, reward, done, illegal = env.step(m)
             #print(reward)
             #env.render()
@@ -89,7 +95,7 @@ def play_random_games(number):
     for i in range(number):
         play_random_game()
 
-def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=100, recurrent=False, loops=0):
+def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=False):
     loops_elapsed = 0
     training = True
     while training:
@@ -97,41 +103,38 @@ def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=10
         memory.reset()
         wins = 0
         for step in range(steps_per_loop):
-            play_against_random()
+            play_against_random(random_moves=random_moves)
             if memory.memory[-1][-3]>0:
                 wins += 1
+        num_steps = len(memory.memory)
+        Qerrors = []
+        nextQs = []
+        logprobs = []
+        for state in memory.memory:
+            prevq = ac.critic.forward_from_board(state[0])
+            newq = ac.critic.forward_from_board(state[4])
+            reward = state[5]
+            Qerror = (prevq - reward - gamma*newq)**2
+            Qerrors.append(Qerror)
+            nextQs.append(newq)
+            move_chosen = state[3][0][2]
+            loc_chosen = state[3][1]
+            loc_prob = state[1][loc_chosen]
+            #print(move_chosen)
+            move_prob = state[2][move_chosen]
+            log_prob = T.log(loc_prob) + T.log(move_prob)
+            logprobs.append(log_prob)
 
-        for i in range(epochs_per_loop):
-            sample = random.sample(memory.memory, states_per_epoch)
-            num_steps = len(sample)
-            Qerrors = []
-            nextQs = []
-            logprobs = []
-            for state in sample:
-                prevq = ac.critic.forward_from_board(state[0])
-                newq = ac.critic.forward_from_board(state[4])
-                reward = state[5]
-                Qerror = (prevq - reward - gamma*newq)**2
-                Qerrors.append(Qerror)
-                nextQs.append(newq)
-                move_chosen = state[3][0][2]
-                loc_chosen = state[3][1]
-                loc_prob = state[1][loc_chosen]
-                #print(move_chosen)
-                move_prob = state[2][move_chosen]
-                log_prob = T.log(loc_prob) + T.log(move_prob)
-                logprobs.append(log_prob)
+        Qerrors = T.stack(Qerrors)
+        logprobs = T.stack(logprobs)
+        nextQs = T.stack(nextQs)
+        actor_loss = (-logprobs*nextQs).mean()
+        critic_loss = Qerrors.mean()
+        loss = actor_loss + critic_loss
 
-            Qerrors = T.stack(Qerrors)
-            logprobs = T.stack(logprobs)
-            nextQs = T.stack(nextQs)
-            actor_loss = (-logprobs*nextQs).mean()
-            critic_loss = Qerrors.mean()
-            loss = actor_loss + critic_loss
-
-            optimizer.zero_grad()
-            loss.backward(retain_graph=True)
-            optimizer.step()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
 
         win_prop = wins/steps_per_loop
         move_legalities = [memory.memory[x][-1] for x in range(len(memory.memory))]
@@ -146,6 +149,9 @@ def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=10
             if loops_elapsed > loops:
                 training = False
 
-train_against_random(1, loops=1)
+for name, param in ac.named_parameters():
+    print(name, param.data)
+
+train_against_random(1, loops=1000, random_moves=True)
 [memory.memory[i][-3] for i in range(len(memory.memory))]
 env.render()
