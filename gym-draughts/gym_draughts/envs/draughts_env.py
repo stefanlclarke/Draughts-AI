@@ -67,7 +67,7 @@ class DraughtsEnvironment(gym.Env):
     def render(self, mode='human', close=False):
         if not self.has_screen:
             self.has_screen = True
-            self.vis = 
+            #self.vis = 
         print(self.board.board)
 
     def _next_observation(self):

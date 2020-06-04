@@ -125,6 +125,7 @@ def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=10
             Qerrors = T.stack(Qerrors)
             logprobs = T.stack(logprobs)
             nextQs = T.stack(nextQs)
+            nextQs.detach()
             actor_loss = (-logprobs*nextQs).mean()
             critic_loss = Qerrors.mean()
             loss = actor_loss + critic_loss
@@ -138,6 +139,7 @@ def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=10
         legal_count = move_legalities.count(True)
         legal_prop = legal_count/len(move_legalities)
 
+        print(f"Loop: {loops_elapsed}")
         print(f"ILLEGAL PROPORTION: {legal_prop}")
         print(f"WIN PROPORTION: {win_prop}")
 
@@ -146,6 +148,6 @@ def train_against_random(steps_per_loop, epochs_per_loop=10, states_per_epoch=10
             if loops_elapsed > loops:
                 training = False
 
-train_against_random(1, loops=1)
+train_against_random(30, loops=20)
 [memory.memory[i][-3] for i in range(len(memory.memory))]
 env.render()
