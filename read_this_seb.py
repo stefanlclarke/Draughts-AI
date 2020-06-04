@@ -6,3 +6,4 @@ import gym_draughts
 env = gym.make('draughts-v0')
 
 env.render()
+env.random_move()

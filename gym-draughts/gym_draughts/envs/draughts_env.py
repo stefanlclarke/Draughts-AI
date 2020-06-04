@@ -10,8 +10,8 @@ class DraughtsEnvironment(gym.Env):
     metadata = {'render.modes': ['human']}
 
     def __init__(self):
-        size=10
-        rewards=[10,2,0,0]
+        size=6
+        rewards=[10,2,1,1,-1, 0.3]
 
         self.size=size
         self.board=board(self.size)
@@ -20,14 +20,20 @@ class DraughtsEnvironment(gym.Env):
         self.stalemate_reward = rewards[1]
         self.capture_reward = rewards[2]
         self.king_reward = rewards[3]
+        self.illegal_reward = rewards[4]
+        self.legal_reward = rewards[5]
+
+        self.player = self.board.player
+        self.gameboard = self.board.board
 
         self.has_screen = False 
 
     def reset(self):
+        #print('GAME OVER')
         self.board.reset()
 
     def step(self, action):
-        victor, stalemate, took, king = self._take_action(action)
+        victor, stalemate, took, king, illegal = self._take_action(action)
         new_board = self._next_observation()
         reward = 0
         if victor != 0:
@@ -42,11 +48,21 @@ class DraughtsEnvironment(gym.Env):
             reward += self.capture_reward
         if king == True:
             reward += self.king_reward
-        return new_board, reward, done
+        if illegal == True:
+            reward = self.illegal_reward
+        else:
+            reward += self.legal_reward
+        return new_board, reward, done, illegal
 
     def _take_action(self, action):
+        legality = self.ismovelegal(action)
+        if legality == False:
+            #action = self.random_move()
+            illegal = True
+        else:
+            illegal = False
         victor, stalemate, took, king = self.board.makemove(np.array([action[0], action[1]]), action[2])
-        return victor, stalemate, took, king
+        return victor, stalemate, took, king, illegal
 
     def render(self, mode='human', close=False):
         if not self.has_screen:
@@ -58,11 +74,24 @@ class DraughtsEnvironment(gym.Env):
         return self.get_state()
 
     def get_state(self):
-        flatboard = np.copy(self.board.board).flatten()
-        one_hot_board = np.zeros((flatboard.size, 8))
-        one_hot_board[np.arange(flatboard.size), flatboard.astype(int)]=1
-        one_hot_board = np.delete(one_hot_board, 0, 1)
-        return one_hot_board
+        #flatboard = np.copy(self.board.board).flatten()
+        #one_hot_board = np.zeros((flatboard.size, 8))
+        #one_hot_board[np.arange(flatboard.size), flatboard.astype(int)]=1
+        #one_hot_board = np.delete(one_hot_board, 0, 1)
+        #return one_hot_board
+        return self.board.board
+
+    def random_move(self):
+        move = get_random_move(self.board.board, self.board.player)
+        return (move[0][0], move[0][1], move[1])
+
+    def ismovelegal(self, action):
+        tile = np.array([action[0], action[1]])
+        direction = action[2]
+        moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
+        move = moves[direction]
+        return ismovelegal(self.board.board, tile, move, self.board.player)
+
 
 def startingpos(board):
     boardnew = board.copy()
@@ -133,6 +162,8 @@ def ismovelegal(board, tile, direction, player):
         if isinboard(board, movespace) == False:
             #print("Move not in board")
             return False
+        if isinboard(board, takespace) == False:
+            return False
         if abs(board[tile[0], tile[1]]) == 1 or abs(board[tile[0], tile[1]]) == 2:
             return False
     if abs(board[tile[0], tile[1]]) == 2 or abs(board[tile[0], tile[1]])==4:
@@ -168,8 +199,8 @@ def ismovelegal(board, tile, direction, player):
                 else:
                     #print("Illegal movement attempted")
                     return False
+        return False
 
-            pass
     elif player == 1:
         if king == False and direction[0] == -1:
             #print("Backwards move attempted")
@@ -190,6 +221,7 @@ def ismovelegal(board, tile, direction, player):
                 else:
                     #print("Illegal movement attempted")
                     return False
+            return False
 
 def get_legal_moves(board,player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
@@ -312,10 +344,16 @@ def move(board1, piece, number, player):
     moveloc = piece + move
     takeloc = piece + 2*move
     if board[moveloc[0], moveloc[1]] != 0:
+        #if isinboard(board, takeloc) == True: #Added this, possibly an error
         board[piece[0], piece[1]] = 0
         board[moveloc[0], moveloc[1]] = 0
-        board[takeloc[0], takeloc[1]] = takecounter
+        try:
+            board[takeloc[0], takeloc[1]] = takecounter
+        except:
+            print(board1, piece, number, player)
         more_hops = check_further_moves(board, takeloc, player)
+        #else:
+        #return (board, player, False)
         #print("MORE HOPS:", more_hops)
         if len(more_hops)==0:
             #print("no more hops")
@@ -373,10 +411,10 @@ def checkwin(board):
     mwin = sum(sum(piecesp))
     pwin = sum(sum(piecesm))
     if mwin == 0:
-        #print("VICTORY!")
+        #print("-1 VICTORY!")
         return -1
     elif pwin == 0:
-        #print("VICTORY!")
+        #print("1 VICTORY!")
         return 1
     else:
         return 0
