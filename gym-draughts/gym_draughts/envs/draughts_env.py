@@ -21,6 +21,8 @@ class DraughtsEnvironment(gym.Env):
         self.capture_reward = rewards[2]
         self.king_reward = rewards[3]
 
+        self.has_screen = False 
+
     def reset(self):
         self.board.reset()
 
@@ -47,6 +49,9 @@ class DraughtsEnvironment(gym.Env):
         return victor, stalemate, took, king
 
     def render(self, mode='human', close=False):
+        if not self.has_screen:
+            self.has_screen = True
+            self.vis = 
         print(self.board.board)
 
     def _next_observation(self):
