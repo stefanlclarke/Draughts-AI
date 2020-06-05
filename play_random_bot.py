@@ -152,4 +152,13 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
             if loops_elapsed > loops:
                 training = False
 
+<<<<<<< HEAD
 train_against_random(30, loops=100)
+=======
+for name, param in ac.named_parameters():
+    print(name, param.data)
+
+train_against_random(1, loops=1000, random_moves=True)
+[memory.memory[i][-3] for i in range(len(memory.memory))]
+env.render()
+>>>>>>> 11524b266bcb011f4de87b0d092657e41fe19356
