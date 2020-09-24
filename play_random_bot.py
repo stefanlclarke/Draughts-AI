@@ -16,7 +16,7 @@ optimizer = T.optim.Adam(ac.parameters(), lr = learning_rate)
 env = gym.make('draughts-v0')
 
 def play_against_random(random_moves=False):
-    maxmoves = 10000
+    maxmoves = 100
     num_moves = 0
     env.reset()
     playing = True
@@ -27,10 +27,12 @@ def play_against_random(random_moves=False):
             nowstate = env.get_state()
             if not firstmove:
                 memory.addstate(oldstate, loc, move, (m,i), (nowstate, reward, done, illegal))
+                #print('adding to memory: ', illegal)
             else:
                 firstmove = False
             oldstate = env.get_state()
             loc, move, m, i = ac.actor.forward_from_board(env.board.board)
+            #print(loc, move, m, i)
             if random_moves:
                 m = env.random_move()
                 m_1h = move_to_onehot(m)
@@ -39,7 +41,8 @@ def play_against_random(random_moves=False):
                 i = np.random.choice(18, p=D)
             newstate, reward, done, illegal = env.step(m)
             #print(reward)
-            #env.render()
+            ##print('ILLEGAL MOVE: ', illegal)
+            ##env.render()
             num_moves += 1
             if num_moves > maxmoves:
                 playing = False
@@ -112,7 +115,7 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
         logprobs = []
         for state in memory.memory:
             prevq = ac.critic.forward_from_board(state[0])
-            newq = ac.critic.forward_from_board(state[4])
+            newq = ac.critic.forward_from_board(state[4]).detach()
             reward = state[5]
             Qerror = (prevq - reward - gamma*newq)**2
             Qerrors.append(Qerror)
@@ -139,7 +142,8 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
 
         win_prop = wins/steps_per_loop
         move_legalities = [memory.memory[x][-1] for x in range(len(memory.memory))]
-        legal_count = move_legalities.count(True)
+
+        legal_count = move_legalities.count(False)
         legal_prop = legal_count/len(move_legalities)
 
         print(f"Loop: {loops_elapsed}")
@@ -152,13 +156,4 @@ def train_against_random(steps_per_loop, recurrent=False, loops=0, random_moves=
             if loops_elapsed > loops:
                 training = False
 
-<<<<<<< HEAD
 train_against_random(30, loops=100)
-=======
-for name, param in ac.named_parameters():
-    print(name, param.data)
-
-train_against_random(1, loops=1000, random_moves=True)
-[memory.memory[i][-3] for i in range(len(memory.memory))]
-env.render()
->>>>>>> 11524b266bcb011f4de87b0d092657e41fe19356
