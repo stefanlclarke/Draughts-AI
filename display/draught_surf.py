@@ -6,7 +6,6 @@ def find_square( corner , click , square_size):
     # Finds the square clicked on from the pixel and corner
     square_x = int((click[0] -  corner[0]) // square_size)
     square_y = int((click[1] -  corner[1]) // square_size)
-    print(f"SQUARE: {square_x} {square_y}")
     return (square_x, square_y)
 
 def aa_circle(surf, x ,y, size, col):
