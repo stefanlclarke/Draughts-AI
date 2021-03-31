@@ -29,7 +29,6 @@ class DraughtsEnvironment(gym.Env):
         self.has_screen = False
 
     def reset(self):
-        #print('GAME OVER')
         self.board.reset()
 
     def step(self, action):
@@ -129,7 +128,6 @@ class board(object):
         notnext=-nextmove
         board = reset_3s_and_4s(board, notnext)
         board = find_forced_moves(board, nextmove)
-        #print("MOVING NEXT:", nextmove)
         board, king = checkforking(board)
         self.board = board
         self.player = nextmove
@@ -160,10 +158,8 @@ def ismovelegal(board, tile, direction, player):
     if b != 0:
         mid_hop=True
         if isinboard(board, tile) == False:
-            #print("Tile not in board")
             return False
         if isinboard(board, movespace) == False:
-            #print("Move not in board")
             return False
         if isinboard(board, takespace) == False:
             return False
@@ -177,52 +173,42 @@ def ismovelegal(board, tile, direction, player):
         if board[movespace[0],movespace[1]]==0:
             return False
     if isinboard(board, tile) == False:
-        #print("Tile not in board")
         return False
     if isinboard(board, movespace) == False:
-        #print("Move not in board")
         return False
     if player == -1:
         if king == False and direction[0] == 1:
-            #print("Backwards move attempted")
             return False
 
         if board[tile[0], tile[1]] != -1 and board[tile[0], tile[1]] != -2 and board[tile[0], tile[1]] != -3 and board[tile[0], tile[1]] != -4:
-            #print("Piece not selected")
             return False
         else:
             if board[movespace[0], movespace[1]] == 0:
                 return True
             elif board[movespace[0], movespace[1]] == 1 or board[movespace[0], movespace[1]] == 2:
                 if isinboard(board, takespace) == False:
-                    #print("Illegal movement attempted")
                     return False
                 elif board[takespace[0], takespace[1]] == 0:
                     return True
                 else:
-                    #print("Illegal movement attempted")
                     return False
         return False
 
     elif player == 1:
         if king == False and direction[0] == -1:
-            #print("Backwards move attempted")
             return False
 
         if board[tile[0], tile[1]] != 1 and board[tile[0], tile[1]] != 2 and board[tile[0], tile[1]] != 3 and board[tile[0], tile[1]] != 4:
-           # print("Piece not selected")
             return False
         else:
             if board[movespace[0], movespace[1]] == 0:
                 return True
             elif board[movespace[0], movespace[1]] == -1 or board[movespace[0], movespace[1]] == -2:
                 if isinboard(board, takespace) == False:
-                    #print("Hop not in board")
                     return False
                 elif board[takespace[0], takespace[1]] == 0:
                     return True
                 else:
-                    #print("Illegal movement attempted")
                     return False
             return False
 
@@ -311,9 +297,6 @@ def reset_3s_and_4s(board, player):
 
 ##
 def move(board1, piece, number, player):
-
-    print('move inputs {}'.format((board1, piece, number, player)))
-
     board = board1
     counter = board[piece[0], piece[1]]
     if counter == 3:
@@ -324,7 +307,6 @@ def move(board1, piece, number, player):
         counter = -1
     elif counter == -4:
         counter = -2
-    #print(counter)
 
     if number == 0:
         move = np.array([-1, -1])
@@ -335,11 +317,9 @@ def move(board1, piece, number, player):
     elif number == 3:
         move = np.array([1, -1])
     else:
-        #print("ILLEGAL MOVE")
         return (board, player)
     legal = ismovelegal(board, piece, move, player)
     if legal == False:
-        #print("ILLEGAL MOVE")
         return (board, player, False)
 
     if abs(counter)==1.0 or abs(counter)==3.0:
@@ -356,13 +336,10 @@ def move(board1, piece, number, player):
         try:
             board[takeloc[0], takeloc[1]] = takecounter
         except:
-            print(board1, piece, number, player)
         more_hops = check_further_moves(board, takeloc, player)
         #else:
         #return (board, player, False)
-        #print("MORE HOPS:", more_hops)
         if len(more_hops)==0:
-            #print("no more hops")
             board[takeloc[0], takeloc[1]] = counter
             return (board, -player, True)
         else:
@@ -387,8 +364,6 @@ def checkforking(board):
 
 def check_further_moves(board, piece, player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
-    #print(piece)
-    #print(abs(board[piece[0], piece[1]]))
     if abs(board[piece[0], piece[1]])==1 or abs(board[piece[0], piece[1]])==3:
         if player == -1:
             a=0
@@ -400,11 +375,7 @@ def check_further_moves(board, piece, player):
         a=0
         b=4
     movespaces = [(moves[i], piece+moves[i]) for i in range(a,b)]
-    #print("MOVESPACES:", movespaces)
-    #for x in movespaces:
-        #print(x[0], x[1], ismovelegal(board, piece, x[0], player))
     available_hops = [i for i,x in enumerate(movespaces) if ismovelegal(board, piece, x[0], player) and board[x[1][0], x[1][1]]==-player]
-    #print("AVAILABLE HOPS:", available_hops)
     return available_hops
 
 def checkwin(board):
@@ -412,27 +383,20 @@ def checkwin(board):
     piecesm = board.copy()
     piecesp[piecesp<0]=0
     piecesm[piecesm>0]=0
-    #print(piecesp)
-    #print(piecesm)
     mwin = sum(sum(piecesp))
     pwin = sum(sum(piecesm))
     if mwin == 0:
-        #print("-1 VICTORY!")
         return -1
     elif pwin == 0:
-        #print("1 VICTORY!")
         return 1
     else:
         return 0
 
 def checkstalemate(board, player):
     moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
-    #print("Player:", player)
     pieces = np.argwhere(player*board > 0)
-    #print(pieces)
     for piece in pieces:
         for move in moves:
-            #print(piece, move, player, ismovelegal(board, piece, move, player))
             if ismovelegal(board, piece, move , player):
                 return False
     return True
