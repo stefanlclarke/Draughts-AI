@@ -336,6 +336,7 @@ def move(board1, piece, number, player):
         try:
             board[takeloc[0], takeloc[1]] = takecounter
         except:
+            pass
         more_hops = check_further_moves(board, takeloc, player)
         #else:
         #return (board, player, False)
