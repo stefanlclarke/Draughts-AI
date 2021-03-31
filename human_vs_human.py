@@ -2,7 +2,8 @@ import numpy as np
 import gym
 import gym_draughts
 import pygame
-from draught_surf import DraughtVisualiser, find_square
+from display.draught_surf import DraughtVisualiser, find_square
+from memory.memory import GameMemory
 
 class PvPEngine:
     def __init__(self):
@@ -12,6 +13,7 @@ class PvPEngine:
         and run .run()
         """
         self.env = gym.make('draughts-v0')
+        self.save_game = GameMemory(self.env)
 
     def run(self):
         pygame.init()
@@ -39,16 +41,16 @@ class PvPEngine:
                 if event.type==pygame.KEYDOWN:
                     key_name=pygame.key.name(event.key)
                     if key_name=='w':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 0])
+                        self.save_game.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 0])
                         last_click = None
                     if key_name=='e':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 3])
+                        self.save_game.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 3])
                         last_click = None
                     if key_name=='d':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 2])
+                        self.save_game.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 2])
                         last_click = None
                     if key_name=='s':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 1])
+                        self.save_game.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 1])
                         last_click = None
 
             vis.draw_from_grid(self.env.board.board)

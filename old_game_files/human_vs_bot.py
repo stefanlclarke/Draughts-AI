@@ -1,10 +1,9 @@
 import numpy as np
 import pygame
-import gamefile
+import ga
 from gamefile import get_random_move
-import play
 from pygame import gfxdraw
-from play import game, play
+
 from draught_surf import DraughtVisualiser, test, find_square
 from parameters import board_size, screen_size
 
