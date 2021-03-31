@@ -26,7 +26,7 @@ class DraughtsEnvironment(gym.Env):
         self.player = self.board.player
         self.gameboard = self.board.board
 
-        self.has_screen = False 
+        self.has_screen = False
 
     def reset(self):
         #print('GAME OVER')
@@ -67,7 +67,7 @@ class DraughtsEnvironment(gym.Env):
     def render(self, mode='human', close=False):
         if not self.has_screen:
             self.has_screen = True
-            #self.vis = 
+            #self.vis =
         print(self.board.board)
 
     def _next_observation(self):
@@ -89,8 +89,11 @@ class DraughtsEnvironment(gym.Env):
         tile = np.array([action[0], action[1]])
         direction = action[2]
         moves = [np.array([-1,-1]), np.array([-1,1]), np.array([1,1]), np.array([1,-1])]
+
         move = moves[direction]
-        return ismovelegal(self.board.board, tile, move, self.board.player)
+        legality = ismovelegal(self.board.board, tile, move, self.board.player)
+
+        return legality
 
 
 def startingpos(board):
@@ -308,6 +311,9 @@ def reset_3s_and_4s(board, player):
 
 ##
 def move(board1, piece, number, player):
+
+    print('move inputs {}'.format((board1, piece, number, player)))
+
     board = board1
     counter = board[piece[0], piece[1]]
     if counter == 3:

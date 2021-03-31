@@ -22,7 +22,8 @@ class PvPEngine:
         pygame.display.set_caption("Test!")
         vis.draw_from_grid(self.env.board.board)
         pygame.display.update()
-        MOVETHISPIECE=0
+        MOVETHISPIECE = 0
+        last_click = None
 
         while True: # main game loop
             for event in pygame.event.get():
@@ -32,22 +33,30 @@ class PvPEngine:
 
                     pos = pygame.mouse.get_pos()
                     square = find_square( (0,0), pos, 800/6)
-                    MOVETHISPIECE=square
+                    MOVETHISPIECE = square
+                    last_click = square
+
                 if event.type==pygame.KEYDOWN:
                     key_name=pygame.key.name(event.key)
                     if key_name=='w':
                         self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 0])
-                    if key_name=='a':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 1])
-                    if key_name=='s':
-                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 2])
-                    if key_name=='d':
+                        last_click = None
+                    if key_name=='e':
                         self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 3])
+                        last_click = None
+                    if key_name=='d':
+                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 2])
+                        last_click = None
+                    if key_name=='s':
+                        self.env.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 1])
+                        last_click = None
 
             vis.draw_from_grid(self.env.board.board)
+            vis.draw_click_marker(last_click)
             colour=pygame.Color("chocolate1")
             d_surf.blit(vis.my_surf, (0,0))
             pygame.display.update()
+
 
 if __name__ == "__main__":
     # execute only if run as a script

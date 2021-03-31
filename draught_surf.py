@@ -34,14 +34,20 @@ class DraughtVisualiser:
                 if val == 1 or  val == 3:
                     self.draw_piece(x_cord, y, pygame.Color("deeppink1"))
                 elif val == 2  or val == 4:
-                    self.draw_piece(x_cord, y, pygame.Color("deeppink4"))
+                    self.draw_piece(x_cord, y, pygame.Color("darkorchid4"))
                 elif val == -1 or val == -3:
                     self.draw_piece(x_cord, y, pygame.Color("darkgoldenrod1"))
                 elif val == -2  or val == -4:
-                    self.draw_piece(x_cord, y, pygame.Color("darkgoldenrod4"))
+                    self.draw_piece(x_cord, y, pygame.Color("chocolate1"))
 
                 if val in [-4,-3,3,4]:
                     gfxdraw.filled_circle(self.my_surf,   int((x_cord+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
+
+    def draw_click_marker(self, square):
+        if square is not None:
+            x = square[0]
+            y = square[1]
+            gfxdraw.filled_circle(self.my_surf,   int((x+0.25) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.05) , pygame.Color("blue") )
 
 
     def draw_board(self):
