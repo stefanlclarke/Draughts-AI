@@ -48,3 +48,8 @@ class PvPEngine:
             colour=pygame.Color("chocolate1")
             d_surf.blit(vis.my_surf, (0,0))
             pygame.display.update()
+
+if __name__ == "__main__":
+    # execute only if run as a script
+    engine = PvPEngine()
+    engine.run()
