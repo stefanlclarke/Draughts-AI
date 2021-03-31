@@ -9,6 +9,10 @@ def find_square( corner , click , square_size):
     print(f"SQUARE: {square_x} {square_y}")
     return (square_x, square_y)
 
+def aa_circle(surf, x ,y, size, col):
+    gfxdraw.aacircle(surf, x ,y, size, col)
+    gfxdraw.filled_circle(surf, x ,y, size, col)
+
 class DraughtVisualiser:
     "Helps displaying by providing a pygame surface that may be updated from an array."
     def __init__(self, screen_size, board_size):
@@ -23,7 +27,7 @@ class DraughtVisualiser:
 
     def draw_piece(self, x, y, colour):
         "Draws a piece at the tile x,y in the colour given"
-        gfxdraw.filled_circle(self.my_surf, int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
+        aa_circle(self.my_surf, int((x+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.4) ,colour )
 
     def draw_from_grid(self, grid):
         self.my_surf.fill(pygame.Color(0, 0, 0))
@@ -41,13 +45,13 @@ class DraughtVisualiser:
                     self.draw_piece(x_cord, y, pygame.Color("chocolate1"))
 
                 if val in [-4,-3,3,4]:
-                    gfxdraw.filled_circle(self.my_surf,   int((x_cord+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
+                    aa_circle(self.my_surf,   int((x_cord+0.5) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.1) , pygame.Color("red") )
 
     def draw_click_marker(self, square):
         if square is not None:
             x = square[0]
             y = square[1]
-            gfxdraw.filled_circle(self.my_surf,   int((x+0.25) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.05) , pygame.Color("blue") )
+            aa_circle(self.my_surf,   int((x+0.25) *self.tile_size) , int((y + 0.5) * self.tile_size ) , int(self.tile_size * 0.05) , pygame.Color("blue") )
 
 
     def draw_board(self):
