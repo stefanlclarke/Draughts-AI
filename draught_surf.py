@@ -54,7 +54,7 @@ class DraughtVisualiser:
 
 def dummmy():
     print("DUM3")
-                    
+
 def test():
     pygame.init()
     d_surf = pygame.display.set_mode((800,800))
