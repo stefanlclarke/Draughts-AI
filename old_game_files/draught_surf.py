@@ -52,6 +52,9 @@ class DraughtVisualiser:
                 else:
                     self.draw_square(x,y, pygame.Color("brown"))
 
+def dummmy():
+    print("DUM3")
+                    
 def test():
     pygame.init()
     d_surf = pygame.display.set_mode((800,800))
