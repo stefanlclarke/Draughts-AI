@@ -29,6 +29,19 @@ def add_diags(board, top_left = True):
         to_ret[1::2,::2] = board[1::2]
     return to_ret
     
+def move_to_index(move, max_height):
+    # Assume move is (x,y,dir). xs are merged together because diagonals
+    x_contribution = move[0]//2 * max_height * 4
+    y_contribution = move[1] * 4
+    return x_contribution + y_contribution + move[2]
+
+def index_to_move(index, max_height, top_left = True):
+    direction = index % 4
+    y_move = (index//4) % (max_height)
+    x_move = (index // (4 * max_height)) * 2 # Times 2 is for collapsing.
+    x_adjustment = (y_move + top_left + 1) % 2
+    x_move += x_adjustment
+    return (x_move, y_move, direction)
     
 class GameMemory:
     def __init__(self, game_env):
