@@ -5,8 +5,7 @@ import numpy as np
 
 import pickle
 
-import human_vs_human
-import display.draught_surf as dSurf
+import draught_surf as dSurf
 
 class GameDisplayer():
     def __init__(self,  screen_size,  game_to_disp, extra_info = None, extra_names = None, extra_colours = None):
