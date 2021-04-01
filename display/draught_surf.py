@@ -65,6 +65,7 @@ def dummmy():
     print("DUM3")
 
 def test():
+    game_over = False
     pygame.init()
     d_surf = pygame.display.set_mode((800,800))
     board = [[0 for i in range(40)] for j in range(40)]
@@ -79,6 +80,7 @@ def test():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                game_over = True
             if event.type == pygame.MOUSEBUTTONUP:
                 pos = pygame.mouse.get_pos()
                 square = find_square( (0,0), pos, 800/40)
@@ -90,6 +92,7 @@ def test():
                 if clicknum == 1%2:
                     movepair[1] = square
 
-        vis.draw_from_grid(board)
-        d_surf.blit(vis.my_surf, (0,0))
-        pygame.display.update()
+        if not game_over:
+            vis.draw_from_grid(board)
+            d_surf.blit(vis.my_surf, (0,0))
+            pygame.display.update()

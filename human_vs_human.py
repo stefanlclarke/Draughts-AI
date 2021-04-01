@@ -16,6 +16,7 @@ class PvPEngine:
         self.save_game = GameMemory(self.env)
 
     def run(self):
+        game_over = False
         pygame.init()
         d_surf = pygame.display.set_mode((800,800))
         vis = DraughtVisualiser(800,6)
@@ -31,6 +32,7 @@ class PvPEngine:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    game_over = True
                 if event.type == pygame.MOUSEBUTTONUP:
 
                     pos = pygame.mouse.get_pos()
@@ -53,11 +55,12 @@ class PvPEngine:
                         self.save_game.step([MOVETHISPIECE[0], MOVETHISPIECE[1], 1])
                         last_click = None
 
-            vis.draw_from_grid(self.env.board.board)
-            vis.draw_click_marker(last_click)
-            colour=pygame.Color("chocolate1")
-            d_surf.blit(vis.my_surf, (0,0))
-            pygame.display.update()
+            if not game_over:
+                vis.draw_from_grid(self.env.board.board)
+                vis.draw_click_marker(last_click)
+                colour=pygame.Color("chocolate1")
+                d_surf.blit(vis.my_surf, (0,0))
+                pygame.display.update()
 
 
 if __name__ == "__main__":
