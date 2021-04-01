@@ -3,7 +3,7 @@ import gym
 import gym_draughts
 import pygame
 from display.draught_surf import DraughtVisualiser, find_square
-from memory.memory import GameMemory
+from wrapper.wrapper import GameWrapper
 
 class GameEngine:
     def __init__(self, yellow_player='human', pink_player='human'):
@@ -14,7 +14,7 @@ class GameEngine:
         """
 
         self.env = gym.make('draughts-v0')
-        self.save_game = GameMemory(self.env)
+        self.save_game = GameWrapper(self.env)
         self.human_yellow = False
         self.human_pink = False
         self.random_yellow = False
