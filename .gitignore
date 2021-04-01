@@ -6,3 +6,9 @@ Seb Messing About.ipynb
 memory/__pycache__/memory.cpython-37.pyc
 .memory/saved_games/
 notebook.ipynb
+display/__pycache__/draught_surf.cpython-37.pyc
+__pycache__/human_vs_human.cpython-37.pyc
+gym-draughts/gym_draughts/envs/__pycache__/draughts_env.cpython-37.pyc
+memory/__pycache__/memory.cpython-37.pyc
+*.pyc
+*.pyc
