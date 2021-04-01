@@ -1,5 +1,5 @@
-#First install the environment (see readme in gym file)
-#Then run:
+First install the environment (see readme in gym file)
+Then run:
 
 import gym
 import gym_draughts

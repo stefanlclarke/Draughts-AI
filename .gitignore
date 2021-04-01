@@ -4,3 +4,5 @@
 Seb Messing About.ipynb
 .ipynb_checkpoints/Seb Messing About-checkpoint.ipynb
 memory/__pycache__/memory.cpython-37.pyc
+.memory/saved_games/
+notebook.ipynb

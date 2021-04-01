@@ -1,5 +1,5 @@
 import numpy as np
-import torch as T
+import torch
 import torch.nn as nn
 import gym
 import gym_draughts
@@ -75,7 +75,7 @@ class Memory:
     def reset(self):
         self.memory = []
 
-class Actor(T.nn.Module):
+class Actor(torch.nn.Module):
     def __init__(self, input_dim, l1, l2, locations, moves):
         super(Actor, self).__init__()
         self.indim = input_dim
@@ -101,14 +101,14 @@ class Actor(T.nn.Module):
 
     def forward_from_board(self, input):
         onehot = board_to_onehot(input)
-        onehot = T.from_numpy(onehot).float()
+        onehot = torch.from_numpy(onehot).float()
         loc, move = self.forward(onehot)
         loc1 = loc.detach().numpy()
         move1 = move.detach().numpy()
         m, i = output_to_move(loc1, move1)
         return loc, move, m, i
 
-class Critic(T.nn.Module):
+class Critic(torch.nn.Module):
     def __init__(self, input_dim, l1, l2, l3):
         super(Critic, self).__init__()
         self.indim = input_dim
@@ -130,11 +130,11 @@ class Critic(T.nn.Module):
         return out
 
     def forward_from_board(self, onehot):
-        onehot = T.from_numpy(onehot).float()
+        onehot = torch.from_numpy(onehot).float()
         Q = self.forward(onehot)
         return Q
 
-class AC(T.nn.Module):
+class AC(torch.nn.Module):
     def __init__(self, input_dim, actor_layers, critic_layers, locs, moves):
         super(AC, self).__init__()
         self.actor = Actor(input_dim, actor_layers[0], actor_layers[1], locs, moves)
