@@ -43,6 +43,23 @@ def index_to_move(index, max_height, top_left = True):
     x_move += x_adjustment
     return (x_move, y_move, direction)
 
+def board_to_onehot(board, possible_vals = None):
+    if possible_vals is None:
+        #default for a board
+        possible_vals = np.array(list(range(-4,5)))
+    n = len(possible_vals)
+    to_ret = np.zeros((n,) + board.shape)
+    # Feels like there should be a nice numpy way of doing this. Oh well lol
+    for i in range(n):
+        to_ret[i] = (board == possible_vals[i])
+    return to_ret
+
+def onehot_to_board(one_hot, possible_vals = None):
+    if possible_vals is None:
+        #default for a board
+        possible_vals = np.array(list(range(-4,5)))
+    return one_hot.tranpose() @ possible_vals
+
 class GameMemory:
     def __init__(self, game_env, save_as_onehot=True):
         """
