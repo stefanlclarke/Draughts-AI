@@ -28,7 +28,7 @@ def add_diags(board, top_left = True):
         t_ret[::2,1::2] = board[::2]
         to_ret[1::2,::2] = board[1::2]
     return to_ret
-    
+
 def move_to_index(move, max_height):
     # Assume move is (x,y,dir). xs are merged together because diagonals
     x_contribution = move[0]//2 * max_height * 4
@@ -42,9 +42,9 @@ def index_to_move(index, max_height, top_left = True):
     x_adjustment = (y_move + top_left + 1) % 2
     x_move += x_adjustment
     return (x_move, y_move, direction)
-    
+
 class GameMemory:
-    def __init__(self, game_env):
+    def __init__(self, game_env, save_as_onehot=True):
         """
         Class for pickling game-states to memory
         """
@@ -52,16 +52,31 @@ class GameMemory:
         self.move_memory = []
         self.env = game_env
 
+        self.save_as_onehot = save_as_onehot
+
         self.memory.append(deepcopy(self.env.get_state()))
 
     def save_game(self):
         save_name = "memory/saved_games/{}.pickle".format(str(datetime.now())).replace(" ","")
         pickle.dump([self.memory, self.move_memory], open( save_name.replace(":",""), "wb" ))
 
-    def step(self, move):
-        new_board, reward, done, illegal = self.env.step(move)
-        self.memory.append(deepcopy(self.env.get_state()))
-        self.move_memory.append(move)
+    def step(self, move, torch_agent=False):
+
+        if torch_agent:
+            move_ = index_to_move(index, self.env.size)
+        else:
+            move_ = deepcopy(move)
+            move = move_to_index(move)
+
+        new_board, reward, done, illegal = self.env.step(move_)
+
+        if self.save_as_onehot:
+            self.memory.append(board_to_onehot(deepcopy(self.env.get_state())))
+            self.move_memory.append(move)
+        else:
+            self.memory.append(deepcopy(self.env.get_state()))
+            self.move_memory.append(move_)
+
         if done:
             print('GAME OVER')
             self.save_game()
