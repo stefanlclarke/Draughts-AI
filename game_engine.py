@@ -94,7 +94,7 @@ class GameEngine:
 
             elif self.env.board.player == 1:
                 if self.human_pink:
-                    self.get_human_interactions()
+                    self.game_over = self.get_human_interactions()
                 elif self.random_pink:
                     new_board, reward, self.game_over, illegal = self.save_game.step(self.env.random_move())
                 else:
