@@ -86,7 +86,7 @@ class GameMemory:
             move_ = index_to_move(index, self.env.size)
         else:
             move_ = deepcopy(move)
-            move = move_to_index(move)
+            move = move_to_index(move, self.env.size)
 
         new_board, reward, done, illegal = self.env.step(move_)
         onehot_board = board_to_onehot(new_board)
@@ -101,7 +101,7 @@ class GameMemory:
         if done:
             self.save_game()
 
-        if self.torch_agent:
+        if self.save_as_onehot:
             return onehot_board, reward, done, illegal
         else:
             return new_board, reward, done, illegal
