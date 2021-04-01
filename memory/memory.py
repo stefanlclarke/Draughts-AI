@@ -72,15 +72,20 @@ class GameMemory:
             move = move_to_index(move)
 
         new_board, reward, done, illegal = self.env.step(move_)
+        onehot_board = board_to_onehot(new_board)
 
         if self.save_as_onehot:
-            self.memory.append(board_to_onehot(deepcopy(self.env.get_state())))
+            self.memory.append(deepcopy(onehot_board))
             self.move_memory.append(move)
         else:
-            self.memory.append(deepcopy(self.env.get_state()))
+            self.memory.append(deepcopy(new_board))
             self.move_memory.append(move_)
 
         if done:
             print('GAME OVER')
             self.save_game()
-        return new_board, reward, done, illegal
+
+        if self.torch_agent:
+            return onehot_board, reward, done, illegal
+        else:
+            return new_board, reward, done, illegal
