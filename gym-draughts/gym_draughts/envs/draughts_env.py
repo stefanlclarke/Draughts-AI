@@ -82,7 +82,10 @@ class DraughtsEnvironment(gym.Env):
 
     def random_move(self):
         move = get_random_move(self.board.board, self.board.player)
-        return (move[0][0], move[0][1], move[1])
+        if move is not None:
+            return (move[0][0], move[0][1], move[1])
+        else:
+            return None
 
     def ismovelegal(self, action):
         tile = np.array([action[0], action[1]])
@@ -284,7 +287,7 @@ def get_random_move(board,player):
     if n>0:
         return moves_considered[random.randint(0,n-1) ]
     else:
-        return 0
+        return None
 
 def reset_3s_and_4s(board, player):
     threes = np.argwhere(board==3*player)

@@ -82,7 +82,6 @@ class GameMemory:
             self.move_memory.append(move_)
 
         if done:
-            print('GAME OVER')
             self.save_game()
 
         if self.torch_agent:
