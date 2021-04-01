@@ -20,8 +20,6 @@ class GameEngine:
         self.random_yellow = False
         self.random_pink = False
 
-
-
         if yellow_player == 'human':
             self.human_yellow = True
         if pink_player == 'human':
@@ -111,6 +109,12 @@ class GameEngine:
 
         if self.human_yellow or self.human_pink:
             pygame.quit()
+
+    def reset(self):
+        self.moving_piece = 0
+        self.last_click = None
+        self.game_over = False
+        self.save_game.reset()
 
 
 if __name__ == "__main__":

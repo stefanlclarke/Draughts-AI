@@ -105,3 +105,8 @@ class GameWrapper:
             return onehot_board, reward, done, illegal
         else:
             return new_board, reward, done, illegal
+
+    def reset(self):
+        self.memory = []
+        self.move_memory = []
+        self.env.reset()
