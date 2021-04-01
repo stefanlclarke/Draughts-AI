@@ -74,7 +74,7 @@ class GameEngine:
         vis.draw_from_grid(self.env.board.board)
         pygame.display.update()
 
-        while True: # main game loop
+        while not self.game_over: # main game loop
             if self.env.board.player == -1:
                 if self.human_yellow:
                     self.get_human_interactions()
