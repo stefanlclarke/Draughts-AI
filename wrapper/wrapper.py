@@ -60,7 +60,7 @@ def onehot_to_board(one_hot, possible_vals = None):
         possible_vals = np.array(list(range(-4,5)))
     return one_hot.tranpose() @ possible_vals
 
-class GameMemory:
+class GameWrapper:
     def __init__(self, game_env, save_as_onehot=True):
         """
         Class for pickling game-states to memory
@@ -77,7 +77,7 @@ class GameMemory:
             self.memory.append(deepcopy(self.env.get_state()))
 
     def save_game(self):
-        save_name = "memory/saved_games/{}.pickle".format(str(datetime.now())).replace(" ","")
+        save_name = "wrapper/saved_games/{}.pickle".format(str(datetime.now())).replace(" ","")
         pickle.dump([self.memory, self.move_memory], open( save_name.replace(":",""), "wb" ))
 
     def step(self, move, torch_agent=False):
