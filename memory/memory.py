@@ -54,7 +54,10 @@ class GameMemory:
 
         self.save_as_onehot = save_as_onehot
 
-        self.memory.append(deepcopy(self.env.get_state()))
+        if self.save_as_onehot:
+            self.memory.append(board_to_onehot(deepcopy(self.env.get_state())))
+        else:
+            self.memory.append(deepcopy(self.env.get_state()))
 
     def save_game(self):
         save_name = "memory/saved_games/{}.pickle".format(str(datetime.now())).replace(" ","")
