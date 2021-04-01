@@ -109,6 +109,9 @@ class GameEngine:
                     d_surf.blit(vis.my_surf, (0,0))
                     pygame.display.update()
 
+        if self.human_yellow or self.human_pink:
+            pygame.quit()
+
 
 if __name__ == "__main__":
     # execute only if run as a script
