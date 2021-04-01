@@ -71,7 +71,10 @@ class GameMemory:
 
         self.save_as_onehot = save_as_onehot
 
-        self.memory.append(deepcopy(self.env.get_state()))
+        if self.save_as_onehot:
+            self.memory.append(board_to_onehot(deepcopy(self.env.get_state())))
+        else:
+            self.memory.append(deepcopy(self.env.get_state()))
 
     def save_game(self):
         save_name = "memory/saved_games/{}.pickle".format(str(datetime.now())).replace(" ","")
@@ -86,15 +89,20 @@ class GameMemory:
             move = move_to_index(move)
 
         new_board, reward, done, illegal = self.env.step(move_)
+        onehot_board = board_to_onehot(new_board)
 
         if self.save_as_onehot:
-            self.memory.append(board_to_onehot(deepcopy(self.env.get_state())))
+            self.memory.append(deepcopy(onehot_board))
             self.move_memory.append(move)
         else:
-            self.memory.append(deepcopy(self.env.get_state()))
+            self.memory.append(deepcopy(new_board))
             self.move_memory.append(move_)
 
         if done:
             print('GAME OVER')
             self.save_game()
-        return new_board, reward, done, illegal
+
+        if self.torch_agent:
+            return onehot_board, reward, done, illegal
+        else:
+            return new_board, reward, done, illegal
