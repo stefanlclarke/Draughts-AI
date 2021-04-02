@@ -17,7 +17,7 @@ hidden_size = 256
 learning_rate = 3e-4
 
 # Constants
-GAMMA = 0.99
+GAMMA = 0.95
 num_steps = 300
 max_episodes = 3000
 
@@ -31,32 +31,39 @@ class ActorCritic(nn.Module):
         
         # basic critic imp
         self.critic_linear1 = nn.Linear(num_inputs, hidden_size)
-        self.critic_linear2 = nn.Linear(hidden_size, 1)
+        self.critic_linear2 = nn.Linear(hidden_size, hidden_size)
+        self.critic_linear3 = nn.Linear(hidden_size, 1)
 
         
         # Basic Actor Imp
         self.actor_linear1 = nn.Linear(num_inputs, hidden_size)
-        self.actor_linear2 = nn.Linear(hidden_size, num_actions)
+        self.actor_linear2 = nn.Linear(hidden_size, hidden_size)
+        self.actor_linear3 = nn.Linear(hidden_size, num_actions)
     
     def forward(self, state):
         state = Variable(torch.from_numpy(state).float().unsqueeze(0))
         value = F.relu(self.critic_linear1(state))
-        value = self.critic_linear2(value)
+        value = F.relu(self.critic_linear2(value))
+        value = self.critic_linear3(value)
         
         policy_dist = F.relu(self.actor_linear1(state))
-        policy_dist = F.softmax(self.actor_linear2(policy_dist), dim=1)
+        policy_dist = F.relu(self.actor_linear2(policy_dist))
+        policy_dist = F.softmax(self.actor_linear3(policy_dist), dim=1)
 
         return value, policy_dist
     
 def a2c(env):
     # First gets the needed input output from the env
-    num_inputs = env.observation_space.shape[0]
+    input_shape = env.observation_space.shape
     num_outputs = env.action_space.n
+    
+    num_inputs = np.prod(input_shape)
     
     # Created the NN and optimizer 
     actor_critic = ActorCritic(num_inputs, num_outputs, hidden_size)
     ac_optimizer = optim.Adam(actor_critic.parameters(), lr=learning_rate)
 
+    
     all_lengths = []
     average_lengths = []
     all_rewards = []
@@ -67,9 +74,11 @@ def a2c(env):
         values = []
         rewards = []
 
-        state = env.reset()
+        state = env.reset()[0]
         for steps in range(num_steps):
-            value, policy_dist = actor_critic.forward(state)
+            #Gets the value and actio for the state
+            value, policy_dist = actor_critic.forward(state.flatten())
+            #
             value = value.detach().numpy()[0,0]
             dist = policy_dist.detach().numpy() 
 
@@ -85,7 +94,7 @@ def a2c(env):
             state = new_state
             
             if done or steps == num_steps-1:
-                Qval, _ = actor_critic.forward(new_state)
+                Qval, _ = actor_critic.forward(new_state.flatten())
                 Qval = Qval.detach().numpy()[0,0]
                 all_rewards.append(np.sum(rewards))
                 all_lengths.append(steps)
@@ -134,5 +143,7 @@ def a2c(env):
     
     
 if __name__ == "__main__":
+    
     env = gym.make("draughtswrapper-v0")
+    #env = gym.make("CartPole-v0")
     a2c(env)    
