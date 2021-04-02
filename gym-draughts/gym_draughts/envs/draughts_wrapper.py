@@ -67,7 +67,7 @@ def board_transform(board):
     return board_to_onehot(remove_diags(board))
 
 class DraughtsWrapper(gym.Env):
-    def __init__(self, save_as_onehot=True, save_loc='saved_games/'):
+    def __init__(self, save_as_onehot=True, save_loc='saved_games/', saving=False):
         super(DraughtsWrapper, self).__init__()
         """
         Class for pickling game-states to memory and making the game pytorch-able.
@@ -75,7 +75,8 @@ class DraughtsWrapper(gym.Env):
         self.memory = []
         self.move_memory = []
         self.env = DraughtsEnvironment()
-        
+        self.saving = saving
+
         self.save_loc = save_loc
 
         self.save_as_onehot = save_as_onehot
@@ -111,7 +112,7 @@ class DraughtsWrapper(gym.Env):
             self.memory.append(deepcopy(new_board))
             self.move_memory.append(move_)
 
-        if done:
+        if done and self.saving:
             self.save_game()
 
         if self.save_as_onehot:
