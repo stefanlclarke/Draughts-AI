@@ -12,3 +12,6 @@ gym-draughts/gym_draughts/envs/__pycache__/draughts_env.cpython-37.pyc
 memory/__pycache__/memory.cpython-37.pyc
 *.pyc
 *.pyc
+gym-draughts/gym_draughts/envs/__pycache__/draughts_env.cpython-37.pyc
+gym-draughts/gym_draughts/envs/__pycache__/__init__.cpython-37.pyc
+gym-draughts/gym_draughts/__pycache__/__init__.cpython-37.pyc
