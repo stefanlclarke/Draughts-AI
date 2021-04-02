@@ -58,7 +58,7 @@ def onehot_to_board(one_hot, possible_vals = None):
     if possible_vals is None:
         #default for a board
         possible_vals = np.array(list(range(-4,5)))
-    return one_hot.tranpose() @ possible_vals
+    return (one_hot.transpose() @ possible_vals).transpose()
 
 class GameWrapper:
     def __init__(self, game_env, save_as_onehot=True):
