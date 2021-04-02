@@ -75,6 +75,8 @@ class DraughtsWrapper(gym.Env):
         self.memory = []
         self.move_memory = []
         self.env = DraughtsEnvironment()
+        
+        self.save_loc = save_loc
 
         self.save_as_onehot = save_as_onehot
 
@@ -88,7 +90,7 @@ class DraughtsWrapper(gym.Env):
         self.action_space = spaces.Discrete(2 * self.env.size**2)
 
     def save_game(self):
-        save_name = save_loc+"{}.pickle".format(str(datetime.now())).replace(" ","")
+        save_name = self.save_loc+"{}.pickle".format(str(datetime.now())).replace(" ","")
         pickle.dump([self.memory, self.move_memory], open( save_name.replace(":",""), "wb" ))
 
     def step(self, move, torch_agent=True):
