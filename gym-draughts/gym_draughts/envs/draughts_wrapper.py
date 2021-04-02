@@ -84,7 +84,7 @@ class DraughtsWrapper(gym.Env):
             self.memory.append(deepcopy(self.env.get_state()))
 
         #gym parameters
-        self.observation_space = spaces.Discrete(9 * self.env.size **2 /2)
+        self.observation_space = spaces.Box(0,1,(9, self.env.size, self.env.size//2))
         self.action_space = spaces.Discrete(2 * self.env.size**2)
 
     def save_game(self):
