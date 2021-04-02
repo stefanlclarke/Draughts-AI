@@ -3,9 +3,9 @@ import gym
 from gym_draughts.envs.draughts_wrapper import DraughtsWrapper, move_to_index
 
 class DraughtsRandom(gym.Env):
-    def __init__(self):
+    def __init__(self, saving=False):
 
-        self.save_game = DraughtsWrapper()
+        self.save_game = DraughtsWrapper(saving=saving)
         self.env = self.save_game.env
 
         self.action_space = self.save_game.action_space
