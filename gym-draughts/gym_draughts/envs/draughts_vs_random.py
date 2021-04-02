@@ -1,6 +1,5 @@
 import numpy as np
 import gym
-import pygame
 from gym_draughts.envs.draughts_wrapper import DraughtsWrapper, move_to_index
 
 class DraughtsRandom(gym.Env):
