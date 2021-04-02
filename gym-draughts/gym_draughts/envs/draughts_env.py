@@ -11,7 +11,7 @@ class DraughtsEnvironment(gym.Env):
 
     def __init__(self):
         size=6
-        rewards=[10,2,1,1,-1, 0.3]
+        rewards=[10,2,1,1,-100, 0.3]
 
         self.size=size
         self.board=board(self.size)

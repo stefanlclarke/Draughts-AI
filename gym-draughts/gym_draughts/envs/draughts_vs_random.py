@@ -25,7 +25,7 @@ class DraughtsRandom(gym.Env):
                 new_board_, reward_, done_, illegal_ = self.save_game.step(random)
                 next_move = self.env.player
 
-                reward -= reward_
+                #reward -= reward_
                 done = done_
                 new_board = new_board_
 
