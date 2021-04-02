@@ -94,7 +94,7 @@ class DraughtsWrapper(gym.Env):
     def step(self, move, torch_agent=True):
 
         if torch_agent:
-            move_ = index_to_move(index, self.env.size)
+            move_ = index_to_move(move, self.env.size)
         else:
             move_ = deepcopy(move)
             move = move_to_index(move, self.env.size)
