@@ -19,12 +19,10 @@ class DraughtsRandom(gym.Env):
     def step(self, move):
         new_board, reward, done, illegal = self.save_game.step(move)
         next_move = self.env.board.player
-        print(next_move)
 
         if not done:
             while next_move == 1:
                 random = move_to_index(self.env.random_move(), self.env.size)
-                print(random)
                 new_board_, reward_, done_, illegal_ = self.save_game.step(random)
                 next_move = self.env.player
 
