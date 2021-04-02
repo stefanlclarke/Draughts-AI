@@ -17,10 +17,12 @@ hidden_size = 256
 learning_rate = 3e-4
 
 # Constants
-GAMMA = 0.95
+GAMMA = 0.99
 num_steps = 300
-max_episodes = 3000
+max_episodes = 600
 
+
+CART = False
 
 # We understand this class we chilling
 class ActorCritic(nn.Module):
@@ -57,6 +59,8 @@ def a2c(env):
     input_shape = env.observation_space.shape
     num_outputs = env.action_space.n
     
+    
+    
     num_inputs = np.prod(input_shape)
     
     # Created the NN and optimizer 
@@ -74,10 +78,19 @@ def a2c(env):
         values = []
         rewards = []
 
-        state = env.reset()[0]
+        
+        if CART:
+            state = env.reset()
+        else:
+            state = env.reset()[0]
         for steps in range(num_steps):
             #Gets the value and actio for the state
-            value, policy_dist = actor_critic.forward(state.flatten())
+            if CART:
+                value, policy_dist = actor_critic.forward(state)
+            else:
+                value, policy_dist = actor_critic.forward(state.flatten())
+            
+            
             #
             value = value.detach().numpy()[0,0]
             dist = policy_dist.detach().numpy() 
@@ -94,7 +107,10 @@ def a2c(env):
             state = new_state
             
             if done or steps == num_steps-1:
-                Qval, _ = actor_critic.forward(new_state.flatten())
+                if CART:
+                    Qval, _ = actor_critic.forward(new_state)
+                else:
+                    Qval, _ = actor_critic.forward(new_state.flatten())
                 Qval = Qval.detach().numpy()[0,0]
                 all_rewards.append(np.sum(rewards))
                 all_lengths.append(steps)
@@ -129,7 +145,7 @@ def a2c(env):
     smoothed_rewards = pd.Series.rolling(pd.Series(all_rewards), 10).mean()
     smoothed_rewards = [elem for elem in smoothed_rewards]
     plt.plot(all_rewards)
-    plt.plot(smoothend_rewards)
+    plt.plot(smoothed_rewards)
     plt.plot()
     plt.xlabel('Episode')
     plt.ylabel('Reward')
@@ -143,7 +159,9 @@ def a2c(env):
     
     
 if __name__ == "__main__":
+    if CART:
+        env = gym.make("CartPole-v0")
+    else:
+        env = gym.make("draughtsrandom-v0")
     
-    env = gym.make("draughtsrandom-v0")
-    #env = gym.make("CartPole-v0")
     a2c(env)    
