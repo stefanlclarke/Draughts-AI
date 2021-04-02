@@ -36,3 +36,6 @@ class DraughtsRandom(gym.Env):
 
     def render(self):
         self.save_game.render()
+
+    def reset(self):
+        self.save_game.reset()
