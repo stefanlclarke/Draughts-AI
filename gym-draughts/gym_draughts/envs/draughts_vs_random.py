@@ -9,8 +9,8 @@ class DraughtsRandom(gym.Env):
         self.save_game = DraughtsWrapper()
         self.env = self.save_game.env
 
-        self.action_space = None
-        self.observation_space = None
+        self.action_space = self.save_game.action_space
+        self.observation_space = self.save_game.observation_space
 
 
     def _next_observation(self):
