@@ -144,6 +144,6 @@ def a2c(env):
     
 if __name__ == "__main__":
     
-    env = gym.make("draughtswrapper-v0")
+    env = gym.make("draughtsrandom-v0")
     #env = gym.make("CartPole-v0")
     a2c(env)    
