@@ -11,35 +11,46 @@ class BiddingEnvironment(gym.Env):
 
     def __init__(self):
         self.state = [10,100,100,0]
-        return
+        #self.action_space
+
+        return self.state
 
     def reset(self):
         self.state = [10,100,100,0]
-        return
+        return self.state
 
+    def get_ai_bid(self):
+        return np.random.randint(0, self.state[2] + 1)
 
     def step(self, action):
+        reward = 0.0
         if state[0] == 0:
-            
+            raise "Oh No this is bad"
+
         if action > self.state[1]:
-            apply_punishment
+            reward -= 0.01
+            action = self.state[1]
         self.state[1] -= action
 
-        ai_bid = np.random.randint(0, self.state[2] + 1)
+        ai_bid = self.get_ai_bid()
         self.state[2] -= ai_bid
 
         self.state[3] += 1*(action > ai_bid) - 1*(ai_bid > action)
-        state[0] -= 1
-        return
+        reward += 0.01 * (1*(action > ai_bid) - 1*(ai_bid > action))
 
-    def _take_action(self, action):
-        pass
+        self.state[0] -= 1
+
+        if self.state[0] == 0:
+            reward += 1*(self.state[3] > 0)
+            reward -= 1*(self.state[3] < 0)
+
+        return self.state , reward , self.state[0] == 0 , {}
+
 
     def render(self, mode='human', close=False):
         pass
 
-    def _next_observation(self):
-        return self.get_state()
+
 
     def get_state(self):
-        pass
+        return self.state
