@@ -5,7 +5,7 @@ from gym import error, spaces, utils
 from gym.utils import seeding
 import random
 
-class BiddingEnvironment(gym.Env):
+class BiddingVsUniformEnvironment(gym.Env):
     """Bidding environment made by Stefan and Seb"""
     metadata = {'render.modes': []}
 
@@ -48,7 +48,10 @@ class BiddingEnvironment(gym.Env):
 
 
     def render(self, mode='human', close=False):
-        pass
+        print("Rendering! ☺")
+        print(self.state)
+        print("Rendering done! ☺")
+        return
 
 
 

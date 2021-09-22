@@ -1,10 +1,10 @@
 
 import sys
-import torch  
+import torch
 import gym
 
 import gym_draughts
-import numpy as np  
+import numpy as np
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
@@ -21,7 +21,7 @@ GAMMA = 0.99
 num_steps = 300
 max_episodes = 600
 
-
+#CART
 CART = False
 
 # We understand this class we chilling
@@ -30,44 +30,44 @@ class ActorCritic(nn.Module):
         super(ActorCritic, self).__init__()
 
         self.num_actions = num_actions
-        
+
         # basic critic imp
         self.critic_linear1 = nn.Linear(num_inputs, hidden_size)
         self.critic_linear2 = nn.Linear(hidden_size, hidden_size)
         self.critic_linear3 = nn.Linear(hidden_size, 1)
 
-        
+
         # Basic Actor Imp
         self.actor_linear1 = nn.Linear(num_inputs, hidden_size)
         self.actor_linear2 = nn.Linear(hidden_size, hidden_size)
         self.actor_linear3 = nn.Linear(hidden_size, num_actions)
-    
+
     def forward(self, state):
         state = Variable(torch.from_numpy(state).float().unsqueeze(0))
         value = F.relu(self.critic_linear1(state))
         value = F.relu(self.critic_linear2(value))
         value = self.critic_linear3(value)
-        
+
         policy_dist = F.relu(self.actor_linear1(state))
         policy_dist = F.relu(self.actor_linear2(policy_dist))
         policy_dist = F.softmax(self.actor_linear3(policy_dist), dim=1)
 
         return value, policy_dist
-    
+
 def a2c(env):
     # First gets the needed input output from the env
     input_shape = env.observation_space.shape
     num_outputs = env.action_space.n
-    
-    
-    
+
+
+
     num_inputs = np.prod(input_shape)
-    
-    # Created the NN and optimizer 
+
+    # Created the NN and optimizer
     actor_critic = ActorCritic(num_inputs, num_outputs, hidden_size)
     ac_optimizer = optim.Adam(actor_critic.parameters(), lr=learning_rate)
 
-    
+
     all_lengths = []
     average_lengths = []
     all_rewards = []
@@ -78,7 +78,7 @@ def a2c(env):
         values = []
         rewards = []
 
-        
+
         if CART:
             state = env.reset()
         else:
@@ -89,11 +89,11 @@ def a2c(env):
                 value, policy_dist = actor_critic.forward(state)
             else:
                 value, policy_dist = actor_critic.forward(state.flatten())
-            
-            
+
+
             #
             value = value.detach().numpy()[0,0]
-            dist = policy_dist.detach().numpy() 
+            dist = policy_dist.detach().numpy()
 
             action = np.random.choice(num_outputs, p=np.squeeze(dist))
             log_prob = torch.log(policy_dist.squeeze(0)[action])
@@ -105,7 +105,7 @@ def a2c(env):
             log_probs.append(log_prob)
             entropy_term += entropy
             state = new_state
-            
+
             if done or steps == num_steps-1:
                 if CART:
                     Qval, _ = actor_critic.forward(new_state)
@@ -115,21 +115,21 @@ def a2c(env):
                 all_rewards.append(np.sum(rewards))
                 all_lengths.append(steps)
                 average_lengths.append(np.mean(all_lengths[-10:]))
-                if episode % 10 == 0:                    
+                if episode % 10 == 0:
                     sys.stdout.write("episode: {}, reward: {}, total length: {}, average length: {} \n".format(episode, np.sum(rewards), steps, average_lengths[-1]))
                 break
-        
+
         # compute Q values
         Qvals = np.zeros_like(values)
         for t in reversed(range(len(rewards))):
             Qval = rewards[t] + GAMMA * Qval
             Qvals[t] = Qval
-  
+
         #update actor critic
         values = torch.FloatTensor(values)
         Qvals = torch.FloatTensor(Qvals)
         log_probs = torch.stack(log_probs)
-        
+
         advantage = Qvals - values
         actor_loss = (-log_probs * advantage).mean()
         critic_loss = 0.5 * advantage.pow(2).mean()
@@ -139,8 +139,8 @@ def a2c(env):
         ac_loss.backward()
         ac_optimizer.step()
 
-        
-    
+
+
     # Plot results
     smoothed_rewards = pd.Series.rolling(pd.Series(all_rewards), 10).mean()
     smoothed_rewards = [elem for elem in smoothed_rewards]
@@ -156,12 +156,12 @@ def a2c(env):
     plt.xlabel('Episode')
     plt.ylabel('Episode length')
     plt.show()
-    
-    
+
+
 if __name__ == "__main__":
     if CART:
         env = gym.make("CartPole-v0")
     else:
         env = gym.make("draughtsrandom-v0")
-    
-    a2c(env)    
+
+    a2c(env)
